@@ -1,740 +1,942 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Houzz Pro - AI-First Setup</title>
-   <link rel="preconnect" href="https://fonts.googleapis.com">
-   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-   <style>
-       :root {
-           /* Brand Colors */
-           --primary: #4BAF4F;
-           --primary-dark: #226B29;
-           --primary-tint: #E7F6E7;
-           --neutral: #F5F5F5;
-           --text: #1A1A1A;
-           --text-secondary: #666666;
-           --white: #FFFFFF;
-           
-           /* Typography */
-           --font-size-14: 14px;
-           --font-size-16: 16px;
-           --font-size-18: 18px;
-           --font-size-24: 24px;
-           --font-size-32: 32px;
-           --font-size-48: 48px;
-           
-           /* Spacing Grid (8px) */
-           --space-1: 8px;
-           --space-2: 16px;
-           --space-3: 24px;
-           --space-4: 32px;
-           --space-5: 40px;
-           --space-6: 48px;
-           --space-7: 56px;
-           --space-8: 64px;
-           
-           /* Elevation */
-           --elevation-0: none;
-           --elevation-1: 0 1px 2px rgba(26, 26, 26, 0.04);
-           --elevation-2: 0 2px 8px rgba(26, 26, 26, 0.08);
-           --elevation-3: 0 8px 24px rgba(26, 26, 26, 0.12);
-           --elevation-4: 0 16px 48px rgba(26, 26, 26, 0.16);
-           
-           /* Border Radius */
-           --radius-sm: 8px;
-           --radius-md: 12px;
-           --radius-lg: 16px;
-           --radius-xl: 24px;
-           --radius-full: 9999px;
-           
-           /* Transitions */
-           --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-           --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-           --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
-       }
-       
-       * {
-           margin: 0;
-           padding: 0;
-           box-sizing: border-box;
-       }
-
-       body {
-           font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-           background: var(--neutral);
-           color: var(--text);
-           height: 100vh;
-           overflow: hidden;
-           font-size: var(--font-size-16);
-           line-height: 1.5;
-           -webkit-font-smoothing: antialiased;
-           -moz-osx-font-smoothing: grayscale;
-           position: relative;
-       }
-       
-       body::before {
-           content: '';
-           position: fixed;
-           top: 0;
-           left: 0;
-           right: 0;
-           bottom: 0;
-           background-image: 
-               radial-gradient(circle at 20% 80%, rgba(75, 175, 79, 0.05) 0%, transparent 50%),
-               radial-gradient(circle at 80% 20%, rgba(75, 175, 79, 0.03) 0%, transparent 50%),
-               radial-gradient(circle at 40% 40%, rgba(34, 107, 41, 0.02) 0%, transparent 50%);
-           pointer-events: none;
-           z-index: -1;
-       }
-
-       .container {
-           display: flex;
-           height: 100vh;
-           background: var(--neutral);
-       }
-
-       /* Header with Logo */
-       .header {
-           background: var(--white);
-           backdrop-filter: blur(24px);
-           -webkit-backdrop-filter: blur(24px);
-           border-bottom: 1px solid rgba(26, 26, 26, 0.08);
-           padding: var(--space-3) var(--space-4);
-           z-index: 1000;
-           box-shadow: var(--elevation-1);
-       }
-       
-       .header-top {
-           display: flex;
-           align-items: center;
-           justify-content: center;
-       }
-
-       .houzz-logo {
-           height: var(--space-3);
-           opacity: 1;
-           transition: opacity var(--transition-base);
-           color: var(--primary);
-       }
-
-       /* Main Content Container */
-       .main-container {
-           flex: 1;
-           background: var(--white);
-           overflow: auto;
-           box-shadow: var(--elevation-1);
-           border-radius: var(--radius-xl) 0 0 0;
-           position: relative;
-       }
-
-       /* Assistant Sidebar */
-       .assistant-sidebar {
-           width: 320px;
-           background: var(--white);
-           color: var(--text);
-           padding: var(--space-4);
-           display: flex;
-           flex-direction: column;
-           border-left: 1px solid rgba(26, 26, 26, 0.08);
-           position: relative;
-           overflow: auto;
-       }
-
-       .assistant-header {
-           margin-bottom: var(--space-4);
-           border-bottom: 1px solid rgba(26, 26, 26, 0.08);
-           padding-bottom: var(--space-3);
-       }
-
-       .assistant-title {
-           font-size: var(--font-size-18);
-           font-weight: 600;
-           color: var(--text);
-           margin-bottom: var(--space-1);
-           letter-spacing: -0.01em;
-       }
-
-       .assistant-subtitle {
-           font-size: var(--font-size-14);
-           color: var(--text-secondary);
-       }
-
-       /* Progress Steps */
-       .progress-steps {
-           flex: 1;
-       }
-
-       .progress-step {
-           display: flex;
-           align-items: center;
-           gap: var(--space-2);
-           margin-bottom: var(--space-3);
-           opacity: 0.5;
-           transition: opacity var(--transition-base);
-       }
-
-       .progress-step.active {
-           opacity: 1;
-       }
-
-       .progress-step.completed {
-           opacity: 0.8;
-       }
-
-       .step-indicator {
-           width: var(--space-4);
-           height: var(--space-4);
-           border-radius: var(--radius-full);
-           background: var(--neutral);
-           border: 2px solid var(--text-secondary);
-           display: flex;
-           align-items: center;
-           justify-content: center;
-           font-size: var(--font-size-14);
-           font-weight: 600;
-           transition: all var(--transition-base);
-           flex-shrink: 0;
-       }
-
-       .progress-step.active .step-indicator {
-           background: var(--primary);
-           border-color: var(--primary);
-           color: var(--white);
-       }
-
-       .progress-step.completed .step-indicator {
-           background: var(--primary-tint);
-           border-color: var(--primary);
-           color: var(--primary);
-       }
-
-       .step-content {
-           flex: 1;
-       }
-
-       .step-title {
-           font-size: var(--font-size-14);
-           font-weight: 600;
-           color: var(--text);
-           margin-bottom: 2px;
-       }
-
-       .step-description {
-           font-size: var(--font-size-14);
-           color: var(--text-secondary);
-       }
-
-       /* Screens */
-       .screen {
-           display: none;
-           padding: var(--space-6);
-           max-width: 900px;
-           margin: 0 auto;
-           animation: fadeIn var(--transition-slow) ease-out;
-       }
-
-       .screen.active {
-           display: block;
-       }
-
-       @keyframes fadeIn {
-           from { opacity: 0; transform: translateY(8px); }
-           to { opacity: 1; transform: translateY(0); }
-       }
-
-       @keyframes scaleFade {
-           from { 
-               transform: scale(0.95) translateY(12px);
-               opacity: 0;
-           }
-           to { 
-               transform: scale(1) translateY(0);
-               opacity: 1;
-           }
-       }
-
-       @keyframes pulse {
-           0%, 100% { transform: scale(1); }
-           50% { transform: scale(1.05); }
-       }
-
-       /* Modal */
-       .modal-overlay {
-           position: fixed;
-           top: 0;
-           left: 0;
-           right: 0;
-           bottom: 0;
-           background: rgba(0, 0, 0, 0.5);
-           display: flex;
-           align-items: center;
-           justify-content: center;
-           z-index: 2000;
-           opacity: 0;
-           visibility: hidden;
-           transition: all var(--transition-base);
-       }
-
-       .modal-overlay.active {
-           opacity: 1;
-           visibility: visible;
-       }
-
-       .modal {
-           background: var(--white);
-           border-radius: var(--radius-xl);
-           padding: var(--space-6);
-           max-width: 600px;
-           width: 90%;
-           box-shadow: var(--elevation-4);
-           transform: scale(0.9);
-           transition: transform var(--transition-base);
-       }
-
-       .modal-overlay.active .modal {
-           transform: scale(1);
-       }
-
-       .modal-header {
-           text-align: center;
-           margin-bottom: var(--space-4);
-       }
-
-       .modal-title {
-           font-size: var(--font-size-32);
-           font-weight: 700;
-           color: var(--text);
-           margin-bottom: var(--space-2);
-           letter-spacing: -0.02em;
-       }
-
-       .modal-subtitle {
-           font-size: var(--font-size-18);
-           color: var(--text-secondary);
-           line-height: 1.5;
-       }
-
-       /* Form Elements */
-       .form-group {
-           margin-bottom: var(--space-3);
-           position: relative;
-       }
-
-       .form-label {
-           display: block;
-           font-weight: 600;
-           color: var(--text);
-           margin-bottom: var(--space-1);
-           font-size: var(--font-size-14);
-           letter-spacing: -0.01em;
-       }
-
-       .form-input {
-           width: 100%;
-           padding: var(--space-2) var(--space-3);
-           border: 1px solid rgba(26, 26, 26, 0.12);
-           border-radius: var(--radius-md);
-           font-size: var(--font-size-16);
-           transition: all var(--transition-base);
-           background: var(--white);
-           box-shadow: var(--elevation-1);
-           font-family: 'Inter', -apple-system, sans-serif;
-       }
-
-       .form-input:focus {
-           outline: none;
-           border-color: var(--primary);
-           box-shadow: 0 0 0 3px rgba(75, 175, 79, 0.1), var(--elevation-2);
-       }
-
-       .extracted-badge {
-           position: absolute;
-           top: 0;
-           right: 0;
-           background: var(--primary-tint);
-           color: var(--primary);
-           padding: 4px var(--space-2);
-           border-radius: var(--radius-sm);
-           font-size: 12px;
-           font-weight: 600;
-           display: flex;
-           align-items: center;
-           gap: 4px;
-       }
-
-       /* Upload Area */
-       .upload-area {
-           border: 2px dashed rgba(26, 26, 26, 0.2);
-           border-radius: var(--radius-lg);
-           padding: var(--space-6);
-           text-align: center;
-           cursor: pointer;
-           transition: all var(--transition-base);
-           background: var(--neutral);
-           position: relative;
-           overflow: hidden;
-       }
-
-       .upload-area:hover {
-           border-color: var(--primary);
-           background: var(--primary-tint);
-       }
-
-       .upload-area.dragging {
-           border-color: var(--primary);
-           background: var(--primary-tint);
-           transform: scale(1.02);
-       }
-
-       .upload-icon {
-           width: 64px;
-           height: 64px;
-           margin: 0 auto var(--space-3);
-           color: var(--text-secondary);
-       }
-
-       .upload-text {
-           font-size: var(--font-size-18);
-           font-weight: 600;
-           color: var(--text);
-           margin-bottom: var(--space-1);
-       }
-
-       .upload-subtext {
-           font-size: var(--font-size-14);
-           color: var(--text-secondary);
-       }
-
-       .upload-input {
-           position: absolute;
-           top: 0;
-           left: 0;
-           width: 100%;
-           height: 100%;
-           opacity: 0;
-           cursor: pointer;
-       }
-
-       /* Button Styles */
-       .btn {
-           background: var(--primary);
-           color: var(--white);
-           border: none;
-           padding: 12px var(--space-3);
-           border-radius: var(--radius-md);
-           font-weight: 600;
-           cursor: pointer;
-           transition: all var(--transition-base);
-           font-size: var(--font-size-16);
-           font-family: 'Inter', -apple-system, sans-serif;
-           box-shadow: var(--elevation-1);
-           display: inline-flex;
-           align-items: center;
-           justify-content: center;
-           gap: var(--space-1);
-       }
-
-       .btn:hover {
-           transform: translateY(-1px);
-           box-shadow: var(--elevation-2);
-           background: var(--primary-dark);
-       }
-
-       .btn:active {
-           transform: translateY(0);
-           box-shadow: var(--elevation-1);
-       }
-
-       .btn-secondary {
-           background: var(--white);
-           color: var(--text);
-           border: 1px solid rgba(26, 26, 26, 0.12);
-       }
-
-       .btn-secondary:hover {
-           background: var(--neutral);
-           border-color: rgba(26, 26, 26, 0.2);
-       }
-
-       .btn-full {
-           width: 100%;
-       }
-
-       .btn-large {
-           padding: var(--space-3) var(--space-4);
-           font-size: var(--font-size-18);
-       }
-
-       /* Glass Card */
-       .glass-card {
-           background: rgba(255, 255, 255, 0.8);
-           backdrop-filter: blur(16px);
-           -webkit-backdrop-filter: blur(16px);
-           border: 1px solid rgba(255, 255, 255, 0.3);
-           border-radius: var(--radius-xl);
-           padding: var(--space-4);
-           box-shadow: var(--elevation-3);
-           margin-bottom: var(--space-4);
-       }
-
-       /* Review Card */
-       .review-card {
-           display: flex;
-           gap: var(--space-3);
-           padding: var(--space-3);
-           border-bottom: 1px solid rgba(26, 26, 26, 0.08);
-       }
-
-       .review-card:last-child {
-           border-bottom: none;
-       }
-
-       .review-avatar {
-           width: 48px;
-           height: 48px;
-           border-radius: var(--radius-full);
-           background: var(--primary-tint);
-           display: flex;
-           align-items: center;
-           justify-content: center;
-           font-weight: 600;
-           color: var(--primary);
-           flex-shrink: 0;
-       }
-
-       .review-content {
-           flex: 1;
-       }
-
-       .review-header {
-           display: flex;
-           align-items: center;
-           gap: var(--space-2);
-           margin-bottom: var(--space-1);
-       }
-
-       .review-name {
-           font-weight: 600;
-           color: var(--text);
-       }
-
-       .review-stars {
-           color: #fbbf24;
-           font-size: var(--font-size-14);
-       }
-
-       .review-text {
-           font-size: var(--font-size-14);
-           color: var(--text-secondary);
-           line-height: 1.5;
-       }
-
-       /* Lead Preview */
-       .lead-preview-card {
-           background: var(--primary-tint);
-           border: 1px solid var(--primary);
-           border-radius: var(--radius-md);
-           padding: var(--space-4);
-           margin: var(--space-4) 0;
-           animation: scaleFade var(--transition-base) ease-out;
-       }
-
-       /* Invoice Preview */
-       .invoice-card {
-           background: var(--white);
-           border: 1px solid rgba(26, 26, 26, 0.08);
-           border-radius: var(--radius-lg);
-           padding: var(--space-6);
-           box-shadow: var(--elevation-2);
-           margin-bottom: var(--space-4);
-       }
-
-       .invoice-header {
-           display: flex;
-           justify-content: space-between;
-           align-items: start;
-           margin-bottom: var(--space-4);
-           padding-bottom: var(--space-3);
-           border-bottom: 1px solid rgba(26, 26, 26, 0.08);
-       }
-
-       /* Payment Banner */
-       .payment-banner {
-           background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-           border-radius: var(--radius-xl);
-           padding: var(--space-5);
-           margin-bottom: var(--space-4);
-           color: var(--white);
-           position: relative;
-           overflow: hidden;
-           animation: scaleFade var(--transition-slow) ease-out;
-       }
-
-       .payment-banner::before {
-           content: '';
-           position: absolute;
-           top: -50%;
-           right: -50%;
-           width: 200%;
-           height: 200%;
-           background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
-           animation: shimmer 3s ease-in-out infinite;
-       }
-
-       @keyframes shimmer {
-           0%, 100% { transform: translateX(-50%) translateY(-50%); }
-           50% { transform: translateX(50%) translateY(50%); }
-       }
-
-       .payment-banner-content {
-           position: relative;
-           z-index: 1;
-       }
-
-       .payment-banner-header {
-           display: flex;
-           align-items: center;
-           justify-content: space-between;
-           margin-bottom: var(--space-3);
-       }
-
-       .payment-banner-title {
-           font-size: var(--font-size-24);
-           font-weight: 700;
-           margin-bottom: var(--space-1);
-       }
-
-       .payment-banner-subtitle {
-           font-size: var(--font-size-16);
-           opacity: 0.9;
-       }
-
-       .savings-badge {
-           background: rgba(255, 255, 255, 0.2);
-           backdrop-filter: blur(8px);
-           padding: var(--space-1) var(--space-3);
-           border-radius: var(--radius-full);
-           font-weight: 600;
-           font-size: var(--font-size-14);
-           animation: pulse 2s ease-in-out infinite;
-       }
-
-       .payment-features {
-           display: grid;
-           grid-template-columns: repeat(3, 1fr);
-           gap: var(--space-3);
-           margin-bottom: var(--space-4);
-       }
-
-       .payment-feature {
-           text-align: center;
-       }
-
-       .payment-feature-icon {
-           width: 48px;
-           height: 48px;
-           background: rgba(255, 255, 255, 0.2);
-           border-radius: var(--radius-full);
-           display: flex;
-           align-items: center;
-           justify-content: center;
-           margin: 0 auto var(--space-2);
-           font-size: var(--font-size-24);
-       }
-
-       .payment-feature-text {
-           font-size: var(--font-size-14);
-           font-weight: 600;
-       }
-
-       .payment-toggle-container {
-           background: rgba(255, 255, 255, 0.1);
-           border-radius: var(--radius-lg);
-           padding: var(--space-3);
-           display: flex;
-           align-items: center;
-           justify-content: space-between;
-           backdrop-filter: blur(8px);
-       }
-
-       .toggle-info {
-           flex: 1;
-       }
-
-       .toggle-title {
-           font-weight: 600;
-           margin-bottom: 4px;
-           font-size: var(--font-size-16);
-       }
-
-       .toggle-description {
-           font-size: var(--font-size-14);
-           opacity: 0.9;
-       }
-
-       .toggle-switch-large {
-           position: relative;
-           width: 64px;
-           height: 32px;
-           background: rgba(255, 255, 255, 0.3);
-           border-radius: var(--radius-full);
-           cursor: pointer;
-           transition: all var(--transition-base);
-       }
-
-       .toggle-switch-large.active {
-           background: rgba(255, 255, 255, 0.5);
-       }
-
-       .toggle-slider-large {
-           position: absolute;
-           top: 4px;
-           left: 4px;
-           width: 24px;
-           height: 24px;
-           background: var(--white);
-           border-radius: var(--radius-full);
-           transition: transform var(--transition-base);
-           box-shadow: var(--elevation-2);
-       }
-
-       .toggle-switch-large.active .toggle-slider-large {
-           transform: translateX(32px);
-       }
-
-       .fee-breakdown {
-           background: rgba(0, 0, 0, 0.05);
-           border-radius: var(--radius-md);
-           padding: var(--space-3);
-           margin-top: var(--space-3);
-           display: none;
-       }
-
-       .fee-breakdown.active {
-           display: block;
-           animation: scaleFade var(--transition-base) ease-out;
-       }
-
-       .fee-row {
-           display: flex;
-           justify-content: space-between;
-           align-items: center;
-           margin-bottom: var(--space-2);
-           font-size: var(--font-size-14);
-       }
-
-       .fee-row:last-child {
-           margin-bottom: 0;
-           padding-top: var(--space-2);
-           border-top: 1px solid rgba(0, 0, 0, 0.1);
-           font-weight: 600;
-           font-size: var(--font-size-16);
-       }
-
-       .promo-banner {
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Houzz Pro - Get Paid Fast Onboarding</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAYFBMVEX////N6cSl2ZWo2pm136id1ow4twBEugA/uQBmw0Kh2JBNvBVJuwZtxUxYvyq24qPk9N35/faM0XO646jp9uNlxDqS03rB5rGX1X/H6LknswD7/ft9y2J2yFjc79aa1Yc4sTLeAAAAcUlEQVR4AcXKAxYAMQwA0bXt+v63XNuehzb54d6MF0RBWkNZUTV9DQ3VtOxX0HRcz19FU9WcIIz8Zaxci5O0OFjCIkvVVD0Dy1gfQLSGRcpJtIrW0MJBkDgrqHnFl1grSL9EBpUiWKKuVN8BorrJ95dyZCMOctiqX/oAAAAASUVORK5CYII=" />
+    <style>
+        :root {
+            /* Brand Colors */
+            --primary: #4BAF4F;
+            --primary-dark: #226B29;
+            --primary-tint: #E7F6E7;
+            --neutral: #F5F5F5;
+            --text: #1A1A1A;
+            --text-secondary: #666666;
+            --white: #FFFFFF;
+            
+            /* Typography */
+            --font-size-14: 14px;
+            --font-size-16: 16px;
+            --font-size-18: 18px;
+            --font-size-24: 24px;
+            --font-size-32: 32px;
+            --font-size-48: 48px;
+            
+            /* Spacing Grid (8px) */
+            --space-1: 8px;
+            --space-2: 16px;
+            --space-3: 24px;
+            --space-4: 32px;
+            --space-5: 40px;
+            --space-6: 48px;
+            --space-7: 56px;
+            --space-8: 64px;
+            
+            /* Elevation */
+            --elevation-0: none;
+            --elevation-1: 0 1px 2px rgba(26, 26, 26, 0.04);
+            --elevation-2: 0 2px 8px rgba(26, 26, 26, 0.08);
+            --elevation-3: 0 8px 24px rgba(26, 26, 26, 0.12);
+            --elevation-4: 0 16px 48px rgba(26, 26, 26, 0.16);
+            
+            /* Border Radius */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+            
+            /* Transitions */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--neutral);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+            font-size: var(--font-size-16);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(75, 175, 79, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(75, 175, 79, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(34, 107, 41, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            background: var(--neutral);
+        }
+
+        /* Header with Logo */
+        .header {
+            background: var(--white);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(26, 26, 26, 0.08);
+            padding: var(--space-3) var(--space-4);
+            z-index: 1000;
+            box-shadow: var(--elevation-1);
+        }
+        
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .houzz-logo {
+            height: var(--space-3);
+            opacity: 1;
+            transition: opacity var(--transition-base);
+            color: var(--primary);
+        }
+
+        /* Main Content Container */
+        .main-container {
+            flex: 1;
+            background: var(--white);
+            overflow: auto;
+            box-shadow: var(--elevation-1);
+            border-radius: var(--radius-xl) 0 0 0;
+            position: relative;
+            margin-right: 320px;
+        }
+
+        /* Assistant Sidebar */
+        .assistant-sidebar {
+            width: 320px;
+            background: var(--white);
+            color: var(--text);
+            padding: var(--space-4);
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid rgba(26, 26, 26, 0.08);
+            position: fixed;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            overflow: auto;
+            z-index: 100;
+        }
+
+        .assistant-header {
+            margin-bottom: var(--space-4);
+            border-bottom: 1px solid rgba(26, 26, 26, 0.08);
+            padding-bottom: var(--space-3);
+        }
+
+        .assistant-title {
+            font-size: var(--font-size-18);
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: var(--space-1);
+            letter-spacing: -0.01em;
+        }
+
+        .assistant-subtitle {
+            font-size: var(--font-size-14);
+            color: var(--text-secondary);
+        }
+
+        /* Progress Steps */
+        .progress-steps {
+            flex: 1;
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            margin-bottom: var(--space-3);
+            opacity: 0.5;
+            transition: opacity var(--transition-base);
+        }
+
+        .progress-step.active {
+            opacity: 1;
+        }
+
+        .progress-step.completed {
+            opacity: 0.8;
+        }
+
+        .step-indicator {
+            width: var(--space-4);
+            height: var(--space-4);
+            border-radius: var(--radius-full);
+            background: var(--neutral);
+            border: 2px solid var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-14);
+            font-weight: 600;
+            transition: all var(--transition-base);
+            flex-shrink: 0;
+        }
+
+        .progress-step.active .step-indicator {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--white);
+        }
+
+        .progress-step.completed .step-indicator {
+            background: var(--primary-tint);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-size: var(--font-size-14);
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+
+        .step-description {
+            font-size: var(--font-size-14);
+            color: var(--text-secondary);
+        }
+
+        /* Screens */
+        .screen {
+            display: none;
+            padding: var(--space-6);
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn var(--transition-slow) ease-out;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes scaleFade {
+            from { 
+                transform: scale(0.95) translateY(12px);
+                opacity: 0;
+            }
+            to { 
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-base);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            max-width: 600px;
+            width: 90%;
+            box-shadow: var(--elevation-4);
+            transform: scale(0.9);
+            transition: transform var(--transition-base);
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: var(--space-4);
+        }
+
+        .modal-title {
+            font-size: var(--font-size-32);
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: var(--space-2);
+            letter-spacing: -0.02em;
+        }
+
+        .modal-subtitle {
+            font-size: var(--font-size-18);
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: var(--space-3);
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: var(--space-1);
+            font-size: var(--font-size-14);
+            letter-spacing: -0.01em;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: var(--space-2) var(--space-3);
+            border: 1px solid rgba(26, 26, 26, 0.12);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-16);
+            transition: all var(--transition-base);
+            background: var(--white);
+            box-shadow: var(--elevation-1);
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(75, 175, 79, 0.1), var(--elevation-2);
+        }
+
+        .extracted-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--primary-tint);
+            color: var(--primary);
+            padding: 4px var(--space-2);
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed rgba(26, 26, 26, 0.2);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            background: var(--neutral);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: var(--primary-tint);
+        }
+
+        .upload-area.dragging {
+            border-color: var(--primary);
+            background: var(--primary-tint);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto var(--space-3);
+            color: var(--text-secondary);
+        }
+
+        .upload-text {
+            font-size: var(--font-size-18);
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: var(--space-1);
+        }
+
+        .upload-subtext {
+            font-size: var(--font-size-14);
+            color: var(--text-secondary);
+        }
+
+        .upload-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* Button Styles */
+        .btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 12px var(--space-3);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-size: var(--font-size-16);
+            font-family: 'Inter', -apple-system, sans-serif;
+            box-shadow: var(--elevation-1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-1);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--elevation-2);
+            background: var(--primary-dark);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: var(--elevation-1);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text);
+            border: 1px solid rgba(26, 26, 26, 0.12);
+        }
+
+        .btn-secondary:hover {
+            background: var(--neutral);
+            border-color: rgba(26, 26, 26, 0.2);
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .btn-large {
+            padding: var(--space-3) var(--space-4);
+            font-size: var(--font-size-18);
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--radius-xl);
+            padding: var(--space-4);
+            box-shadow: var(--elevation-3);
+            margin-bottom: var(--space-4);
+        }
+
+        /* Review Card */
+        .review-card {
+            display: flex;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            border: 1px solid rgba(26, 26, 26, 0.08);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-2);
+            transition: all var(--transition-base);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .review-card:hover {
+            background: var(--neutral);
+            border-color: rgba(26, 26, 26, 0.12);
+        }
+
+        .review-card.selected {
+            background: var(--primary-tint);
+            border-color: var(--primary);
+        }
+
+        .review-card .checkbox {
+            position: absolute;
+            top: var(--space-2);
+            right: var(--space-2);
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(26, 26, 26, 0.2);
+            border-radius: 4px;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-base);
+        }
+
+        .review-card.selected .checkbox {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .review-card.selected .checkbox::after {
+            content: '✓';
+            color: var(--white);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .review-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-full);
+            background: var(--primary-tint);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .review-content {
+            flex: 1;
+            padding-right: var(--space-4);
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            margin-bottom: var(--space-1);
+        }
+
+        .review-name {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .review-stars {
+            color: #fbbf24;
+            font-size: var(--font-size-14);
+        }
+
+        .review-text {
+            font-size: var(--font-size-14);
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .review-source-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px var(--space-1);
+            background: rgba(26, 26, 26, 0.05);
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Review Sources */
+        .review-sources {
+            display: flex;
+            gap: var(--space-2);
+            margin-bottom: var(--space-3);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .review-source {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            padding: var(--space-1) var(--space-2);
+            background: var(--neutral);
+            border: 1px solid rgba(26, 26, 26, 0.08);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-14);
+            transition: all var(--transition-base);
+        }
+
+        .review-source.active {
+            background: var(--primary-tint);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Reviews Section */
+        .reviews-section {
+            margin-bottom: var(--space-4);
+        }
+
+        .reviews-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-3);
+        }
+
+        .reviews-summary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-6); /* increased gap for more space */
+            margin-bottom: var(--space-4);
+            padding: var(--space-3);
+            background: var(--neutral);
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .reviews-stat {
+            text-align: center;
+            min-width: 100px; /* ensure each stat has some width */
+        }
+
+        .reviews-stat-value {
+            font-size: var(--font-size-24);
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .reviews-stat-label {
+            font-size: var(--font-size-14);
+            color: var(--text-secondary);
+        }
+
+        .select-all-toggle {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2);
+            background: var(--neutral);
+            border: 1px solid rgba(26, 26, 26, 0.08);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-size: var(--font-size-14);
+            font-weight: 600;
+        }
+
+        .select-all-toggle:hover {
+            background: var(--primary-tint);
+            border-color: var(--primary);
+        }
+
+        /* Lead Preview */
+        .lead-preview-card {
+            background: var(--primary-tint);
+            border: 1px solid var(--primary);
+            border-radius: var(--radius-md);
+            padding: var(--space-4);
+            margin: var(--space-4) 0;
+            animation: scaleFade var(--transition-base) ease-out;
+        }
+
+        /* Invoice Preview */
+        .invoice-card {
+            background: var(--white);
+            border: 1px solid rgba(26, 26, 26, 0.08);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            box-shadow: var(--elevation-2);
+            margin-bottom: var(--space-4);
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--space-4);
+            padding-bottom: var(--space-3);
+            border-bottom: 1px solid rgba(26, 26, 26, 0.08);
+        }
+
+        /* Invoice Items Table */
+        .invoice-items {
+            margin: var(--space-4) 0;
+        }
+
+        .invoice-items-header {
+            display: grid;
+            grid-template-columns: 1fr 120px 120px;
+            gap: var(--space-3);
+            padding: var(--space-2) 0;
+            border-bottom: 2px solid var(--primary);
+            font-weight: 600;
+            font-size: var(--font-size-14);
+            color: var(--text);
+        }
+
+        .invoice-item {
+            display: grid;
+            grid-template-columns: 1fr 120px 120px;
+            gap: var(--space-3);
+            padding: var(--space-2) 0;
+            border-bottom: 1px solid rgba(26, 26, 26, 0.08);
+            font-size: var(--font-size-14);
+        }
+
+        .invoice-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-description {
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        .item-category {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .item-details {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .item-price {
+            text-align: right;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .invoice-totals {
+            margin-top: var(--space-4);
+            padding-top: var(--space-3);
+            border-top: 2px solid var(--primary);
+        }
+
+        .invoice-total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--space-2);
+            font-size: var(--font-size-16);
+        }
+
+        .invoice-total-row.final {
+            font-size: var(--font-size-18);
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: var(--space-2);
+            padding-top: var(--space-2);
+            border-top: 1px solid rgba(26, 26, 26, 0.08);
+        }
+
+        /* Payment Banner */
+        .payment-banner {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: var(--radius-xl);
+            padding: var(--space-5);
+            margin-bottom: var(--space-4);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+            animation: scaleFade var(--transition-slow) ease-out;
+        }
+
+        .payment-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-50%) translateY(-50%); }
+            50% { transform: translateX(50%) translateY(50%); }
+        }
+
+        .payment-banner-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .payment-banner-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-3);
+        }
+
+        .payment-banner-title {
+            font-size: var(--font-size-24);
+            font-weight: 700;
+            margin-bottom: var(--space-1);
+        }
+
+        .payment-banner-subtitle {
+            font-size: var(--font-size-16);
+            opacity: 0.9;
+        }
+
+        .savings-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: var(--font-size-14);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .payment-features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-3);
+            margin-bottom: var(--space-4);
+        }
+
+        .payment-feature {
+            text-align: center;
+        }
+
+        .payment-feature-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-2);
+            font-size: var(--font-size-24);
+        }
+
+        .payment-feature-text {
+            font-size: var(--font-size-14);
+            font-weight: 600;
+        }
+
+        .payment-toggle-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            padding: var(--space-3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(8px);
+        }
+
+        .toggle-info {
+            flex: 1;
+        }
+
+        .toggle-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: var(--font-size-16);
+        }
+
+        .toggle-description {
+            font-size: var(--font-size-14);
+            opacity: 0.9;
+        }
+
+        .toggle-switch-large {
+            position: relative;
+            width: 64px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .toggle-switch-large.active {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .toggle-slider-large {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 24px;
+            height: 24px;
+            background: var(--white);
+            border-radius: var(--radius-full);
+            transition: transform var(--transition-base);
+            box-shadow: var(--elevation-2);
+        }
+
+        .toggle-switch-large.active .toggle-slider-large {
+            transform: translateX(32px);
+        }
+
+        .fee-breakdown {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: var(--radius-md);
+            padding: var(--space-3);
+            margin-top: var(--space-3);
+            display: none;
+        }
+
+        .fee-breakdown.active {
+            display: block;
+            animation: scaleFade var(--transition-base) ease-out;
+        }
+
+        .promo-banner {
             background: rgba(255, 255, 255, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: var(--radius-md);
@@ -748,753 +950,1472 @@
             animation: pulse 2s ease-in-out infinite;
         }
 
-       /* Success State */
-       .success-animation {
-           text-align: center;
-           padding: var(--space-8);
-       }
+        .promo-banner svg {
+            flex-shrink: 0;
+        }
 
-       .checkmark {
-           width: 120px;
-           height: 120px;
-           background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-           border-radius: var(--radius-full);
-           display: inline-flex;
-           align-items: center;
-           justify-content: center;
-           font-size: 56px;
-           color: var(--white);
-           margin-bottom: var(--space-4);
-           animation: scaleIn var(--transition-slow) cubic-bezier(0.34, 1.56, 0.64, 1);
-           box-shadow: var(--elevation-3);
-       }
+        .fee-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-2);
+            font-size: var(--font-size-14);
+        }
 
-       @keyframes scaleIn {
-           from { 
-               transform: scale(0) rotate(-180deg);
-               opacity: 0;
-           }
-           to { 
-               transform: scale(1) rotate(0deg);
-               opacity: 1;
-           }
-       }
+        .fee-row:last-child {
+            margin-bottom: 0;
+            padding-top: var(--space-2);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            font-size: var(--font-size-16);
+        }
 
-       /* Toast Notification */
-       .toast {
-           position: fixed;
-           bottom: var(--space-4);
-           left: 50%;
-           transform: translateX(-50%) translateY(100px);
-           background: var(--text);
-           color: var(--white);
-           padding: var(--space-2) var(--space-4);
-           border-radius: var(--radius-full);
-           box-shadow: var(--elevation-3);
-           opacity: 0;
-           transition: all var(--transition-base);
-           z-index: 3000;
-           font-size: var(--font-size-14);
-           font-weight: 500;
-       }
+        /* KYC Notice */
+        .kyc-notice {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--radius-md);
+            padding: var(--space-3);
+            margin-top: var(--space-3);
+            display: none;
+            color: var(--text);
+        }
 
-       .toast.show {
-           transform: translateX(-50%) translateY(0);
-           opacity: 1;
-       }
+        .kyc-notice.active {
+            display: block;
+            animation: scaleFade var(--transition-base) ease-out;
+        }
 
-       /* Responsive */
-       @media (max-width: 768px) {
-           .container {
-               flex-direction: column;
-           }
-           
-           .assistant-sidebar {
-               width: 100%;
-               height: auto;
-               max-height: 200px;
-               order: 2;
-               border-left: none;
-               border-top: 1px solid rgba(26, 26, 26, 0.08);
-           }
-           
-           .main-container {
-               order: 1;
-               border-radius: 0;
-           }
+        .kyc-notice-title {
+            font-weight: 600;
+            margin-bottom: var(--space-1);
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            color: var(--text);
+        }
 
-           .screen {
-               padding: var(--space-3);
-           }
+        .kyc-notice-text {
+            font-size: var(--font-size-14);
+            color: var(--text-secondary);
+        }
 
-           .modal {
-               padding: var(--space-4);
-           }
+        /* Success State */
+        .success-animation {
+            text-align: center;
+            padding: var(--space-8);
+        }
 
-           .payment-features {
-               grid-template-columns: 1fr;
-               gap: var(--space-2);
-           }
-       }
-   </style>
+        .checkmark {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: var(--radius-full);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 56px;
+            color: var(--white);
+            margin-bottom: var(--space-4);
+            animation: scaleIn var(--transition-slow) cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: var(--elevation-3);
+        }
+
+        @keyframes scaleIn {
+            from { 
+                transform: scale(0) rotate(-180deg);
+                opacity: 0;
+            }
+            to { 
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: var(--space-4);
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--text);
+            color: var(--white);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-full);
+            box-shadow: var(--elevation-3);
+            opacity: 0;
+            transition: all var(--transition-base);
+            z-index: 3000;
+            font-size: var(--font-size-14);
+            font-weight: 500;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .assistant-sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                max-height: 200px;
+                order: 2;
+                border-left: none;
+                border-top: 1px solid rgba(26, 26, 26, 0.08);
+            }
+            
+            .main-container {
+                order: 1;
+                border-radius: 0;
+                margin-right: 0;
+            }
+
+            .screen {
+                padding: var(--space-3);
+            }
+
+            .modal {
+                padding: var(--space-4);
+            }
+
+            .payment-features {
+                grid-template-columns: 1fr;
+                gap: var(--space-2);
+            }
+
+            .invoice-items-header,
+            .invoice-item {
+                grid-template-columns: 1fr 80px;
+            }
+
+            .invoice-item > div:nth-child(2) {
+                display: none;
+            }
+
+            .invoice-card {
+                padding: var(--space-3);
+                margin: 0 var(--space-2);
+            }
+
+            .invoice-header {
+                flex-direction: column;
+                gap: var(--space-3);
+                text-align: center;
+            }
+
+            .invoice-header > div:last-child {
+                text-align: center;
+            }
+
+            .payment-banner {
+                margin: var(--space-3) var(--space-2);
+                padding: var(--space-3);
+            }
+
+            .payment-banner-header {
+                flex-direction: column;
+                gap: var(--space-2);
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 <body>
-   <div class="container">
-       <!-- Header -->
-       <div class="header">
-           <div class="header-top">
-               <svg class="houzz-logo" viewBox="0 0 128 20" xmlns="http://www.w3.org/2000/svg">
-                   <path class="hz-pro-solutions-logo__houzz" fill="currentColor" d="M49.8929 9.99368C49.3605 9.46113 48.7294 9.04036 48.0129 8.73464C47.2931 8.42892 46.5109 8.27441 45.6859 8.27441C44.8609 8.27441 44.0754 8.42892 43.3589 8.73464C42.6424 9.03707 42.0113 9.46113 41.4789 9.99368C40.9464 10.5262 40.5257 11.1508 40.22 11.851C39.9144 12.5545 39.7599 13.3237 39.7599 14.1357C39.7599 14.9477 39.9144 15.7202 40.22 16.4302C40.5257 17.1403 40.9497 17.7649 41.4789 18.2909C42.0113 18.8135 42.6424 19.2343 43.3589 19.5367C44.0787 19.8425 44.8609 19.997 45.6859 19.997C46.5109 19.997 47.2931 19.8425 48.0129 19.5367C48.7294 19.231 49.3638 18.8135 49.8929 18.2909C50.4221 17.7682 50.8461 17.1436 51.1517 16.4302C51.4574 15.7202 51.6119 14.9477 51.6119 14.1357C51.6119 13.3237 51.4574 12.5545 51.1517 11.851C50.8461 11.1475 50.4254 10.5229 49.8929 9.99368ZM48.7623 15.5657C48.6078 15.9963 48.3876 16.3678 48.1049 16.6702C47.8256 16.9726 47.4772 17.2126 47.0696 17.3901C46.6621 17.5644 46.1953 17.6564 45.6826 17.6564C45.1699 17.6564 44.7032 17.5676 44.2956 17.3901C43.888 17.2159 43.5396 16.9726 43.2603 16.6702C42.9776 16.3678 42.7574 15.9963 42.6029 15.5657C42.4452 15.1285 42.3663 14.6485 42.3663 14.1324C42.3663 13.6196 42.4452 13.1363 42.6029 12.6991C42.7574 12.2685 42.9776 11.897 43.2603 11.5946C43.5396 11.2955 43.888 11.0522 44.2956 10.8747C44.7032 10.6972 45.1699 10.6084 45.6826 10.6084C46.192 10.6084 46.6588 10.6972 47.0696 10.8747C47.4772 11.0522 47.8256 11.2922 48.1049 11.5946C48.3843 11.8937 48.6045 12.2652 48.7623 12.6991C48.92 13.1331 48.9989 13.6163 48.9989 14.1324C48.9989 14.6518 48.92 15.1317 48.7623 15.5657Z"></path>
-                   <path class="hz-pro-solutions-logo__houzz" fill="currentColor" d="M34.4056 8.65202C32.7557 7.96826 30.8888 8.25097 29.5807 9.30619V4.60205H26.9513V19.7237H29.5807V13.7802C29.5807 12.6494 29.8699 10.7493 32.0457 10.7493C34.0441 10.7493 34.5108 12.3798 34.5108 13.7802V19.7237H37.1402V12.965C37.1402 11.1767 36.1213 9.36208 34.4056 8.65202Z"></path>
-                   <path class="hz-pro-solutions-logo__houzz" fill="currentColor" d="M67.0496 17.7513V19.7237H76.5812V17.4226H70.3824L76.2525 10.6606V8.54688H67.3783V10.848H73.0808L67.0496 17.5903"></path>
-                   <path class="hz-pro-solutions-logo__houzz" fill="currentColor" d="M78.5532 17.7513V19.7237H88.0848V17.4226H81.886L87.7561 10.6606V8.54688H78.8819V10.848H84.5844L78.5532 17.5903"></path>
-                   <path class="hz-pro-solutions-logo__houzz" fill="currentColor" d="M61.7908 8.54688V14.6514C61.7908 14.9801 61.7481 15.3286 61.6594 15.6869C61.5772 16.0288 61.4359 16.3477 61.2387 16.6435C61.0513 16.9262 60.7982 17.1596 60.486 17.3404C60.1836 17.5179 59.7925 17.6067 59.3258 17.6067C58.859 17.6067 58.4679 17.5179 58.1623 17.3404C57.8533 17.1596 57.6002 16.9262 57.4096 16.6435C57.2157 16.3542 57.0743 16.0321 56.9889 15.6902C56.9001 15.3286 56.8574 14.9801 56.8574 14.6547V8.54688H54.228V14.898C54.228 17.2615 55.2568 18.8559 57.3274 19.6448C57.942 19.8815 58.6158 19.9999 59.3225 19.9999C60.0324 19.9999 60.7029 19.8815 61.3438 19.635C63.8845 18.6586 64.4169 16.5186 64.4169 14.898V8.54688H61.7908Z"></path>
-                   <path class="hz-pro-solutions-logo__logo" fill="currentColor" d="M11.1749 19.7239H17.7484V8.37278L4.60144 4.60224V0H0V19.7239H6.57349V13.1492H11.1749V19.7239Z"></path>
-                   <path class="hz-pro-solutions-logo__pro" fill="currentColor" d="M96.5713 19.727V15.3976H99.7824C102.241 15.3976 103.46 13.8131 103.46 11.9624C103.46 10.1346 102.201 8.54688 99.7824 8.54688H94.9871V19.727C94.9871 19.727 96.5713 19.727 96.5713 19.727ZM99.6411 13.9939H96.5713V9.95056H99.6411C101.064 9.95056 101.814 10.8053 101.814 11.9624C101.814 13.1392 101.104 13.9939 99.6411 13.9939Z"></path>
-                   <path class="hz-pro-solutions-logo__pro" fill="currentColor" d="M114.241 19.727L111.069 15.276C112.815 15.1346 114.077 13.8953 114.077 11.9624C114.077 10.0525 112.755 8.54688 110.399 8.54688H105.603V19.727H107.188V15.3976H109.442L112.368 19.727H114.241ZM110.257 13.9939H107.191V9.95056H110.257C111.661 9.95056 112.453 10.7855 112.453 11.9624C112.453 13.1392 111.72 13.9939 110.257 13.9939Z"></path>
-                   <path class="hz-pro-solutions-logo__pro" fill="currentColor" d="M121.879 19.9707C125.333 19.9707 127.651 17.4296 127.651 14.1358C127.651 10.8419 125.333 8.30078 121.879 8.30078C118.385 8.30078 116.107 10.8419 116.107 14.1358C116.107 17.4296 118.385 19.9707 121.879 19.9707ZM121.879 18.5671C119.338 18.5671 117.734 16.6571 117.734 14.1358C117.734 11.5947 119.338 9.70446 121.879 9.70446C124.38 9.70446 126.024 11.5947 126.024 14.1358C126.027 16.6571 124.38 18.5671 121.879 18.5671Z"></path>
-               </svg>
-           </div>
-       </div>
-
-       <!-- Main Content -->
-       <div class="main-container">
-           <!-- Invoice Intake Modal -->
-           <div class="modal-overlay active" id="intake-modal">
-               <div class="modal">
-                   <div class="modal-header">
-                       <h2 class="modal-title">Houzz Pro gets you paid faster</h2>
-                       <p class="modal-subtitle">Email or snap a photo of any paper invoice <br /> you have not yet sent!</p>
-                   </div>
-                   
-                   <div class="upload-area" id="upload-area">
-                       <input type="file" class="upload-input" id="invoice-upload" accept="image/*,.pdf">
-                       <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                       </svg>
-                       <div class="upload-text">Drop invoice here or click to upload</div>
-                       <div class="upload-subtext">Supports PDF, JPG, PNG</div>
-                   </div>
-                   
-                   <div style="display: flex; align-items: center; gap: var(--space-3); margin: var(--space-4) 0;">
-                       <div style="flex: 1; height: 1px; background: rgba(26, 26, 26, 0.12);"></div>
-                       <span style="color: var(--text-secondary); font-size: var(--font-size-14);">or</span>
-                       <div style="flex: 1; height: 1px; background: rgba(26, 26, 26, 0.12);"></div>
-                   </div>
-                   
-                   <button class="btn btn-secondary btn-full" onclick="HP.simulateEmailForward()">
-                       <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                       </svg>
-                       Forward via email
-                   </button>
-               </div>
-           </div>
-
-           <!-- Business Profile Screen -->
-           <div class="screen" id="business-screen">
-               <div class="screen-header" style="text-align: center; margin-bottom: var(--space-6);">
-                   <h1 class="modal-title">Confirm your business details</h1>
-                   <p class="modal-subtitle">We extracted this from your invoice</p>
-               </div>
-               
-               <form id="business-form" style="max-width: 600px; margin: 0 auto;">
-                   <div class="form-group">
-                       <label class="form-label">Business Name</label>
-                       <input type="text" class="form-input" id="business-name" value="">
-                       <div class="extracted-badge">
-                           <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                           </svg>
-                           extracted automatically
-                       </div>
-                   </div>
-                   
-                   <div class="form-group">
-                       <label class="form-label">Business Address</label>
-                       <input type="text" class="form-input" id="business-address" value="">
-                       <div class="extracted-badge">
-                           <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                           </svg>
-                           extracted automatically
-                       </div>
-                   </div>
-                   
-                   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
-                       <div class="form-group">
-                           <label class="form-label">Phone</label>
-                           <input type="tel" class="form-input" id="business-phone" value="">
-                           <div class="extracted-badge">
-                               <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                               </svg>
-                               extracted automatically
-                           </div>
-                       </div>
-                       
-                       <div class="form-group">
-                           <label class="form-label">Email</label>
-                           <input type="email" class="form-input" id="business-email" value="">
-                           <div class="extracted-badge">
-                               <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                               </svg>
-                               extracted automatically
-                           </div>
-                       </div>
-                   </div>
-                   
-                   <button type="button" class="btn btn-full" onclick="HP.saveBusinessProfile()" style="margin-top: var(--space-4);">
-                       Save & Continue
-                   </button>
-               </form>
-           </div>
-
-           <!-- Reviews Screen -->
-           <div class="screen" id="reviews-screen">
-               <div class="screen-header" style="text-align: center; margin-bottom: var(--space-6);">
-                   <h1 class="modal-title">We found your public reviews!</h1>
-                   <p class="modal-subtitle">Import your 5-star reputation in one click</p>
-               </div>
-               
-               <div class="glass-card">
-                   <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-3);">
-                       <svg width="24" height="24" viewBox="0 0 24 24" style="color: #d00;">
-                           <path fill="currentColor" d="M18.824 13.5c-1.199 0-2.576 1.078-2.576 2.574 0 1.498 1.377 2.574 2.576 2.574 1.2 0 2.577-1.076 2.577-2.574 0-1.496-1.378-2.574-2.577-2.574zm-13.647 0C3.978 13.5.6 14.578.6 16.074c0 1.498 3.379 2.574 4.577 2.574 1.2 0 2.577-1.076 2.577-2.574 0-1.496-1.377-2.574-2.577-2.574zM12 3c-1.2 0-2.577 1.078-2.577 2.574 0 1.498 1.378 2.574 2.577 2.574s2.577-1.076 2.577-2.574C14.577 4.078 13.199 3 12 3zm0 6.975c-1.2 0-2.577 1.077-2.577 2.574 0 1.496 1.378 2.574 2.577 2.574s2.577-1.078 2.577-2.574c0-1.497-1.377-2.574-2.577-2.574z"/>
-                       </svg>
-                       <span style="font-weight: 600; color: var(--text);">Yelp Reviews</span>
-                       <span style="margin-left: auto; background: var(--primary-tint); color: var(--primary); padding: 4px var(--space-2); border-radius: var(--radius-sm); font-size: var(--font-size-14); font-weight: 600;">3 reviews found</span>
-                   </div>
-                   
-                   <div class="review-card">
-                       <div class="review-avatar">JD</div>
-                       <div class="review-content">
-                           <div class="review-header">
-                               <span class="review-name">John D.</span>
-                               <span class="review-stars">★★★★★</span>
-                           </div>
-                           <p class="review-text">Outstanding work on our kitchen remodel! Professional, on-time, and the quality exceeded our expectations. Highly recommend!</p>
-                       </div>
-                   </div>
-                   
-                   <div class="review-card">
-                       <div class="review-avatar">MR</div>
-                       <div class="review-content">
-                           <div class="review-header">
-                               <span class="review-name">Maria R.</span>
-                               <span class="review-stars">★★★★★</span>
-                           </div>
-                           <p class="review-text">Best contractor we've worked with. Transparent pricing, excellent communication, and beautiful results. Will hire again!</p>
-                       </div>
-                   </div>
-                   
-                   <div class="review-card">
-                       <div class="review-avatar">TC</div>
-                       <div class="review-content">
-                           <div class="review-header">
-                               <span class="review-name">Tom C.</span>
-                               <span class="review-stars">★★★★★</span>
-                           </div>
-                           <p class="review-text">Transformed our bathroom into a spa-like retreat. Attention to detail was impressive. Fair pricing and zero surprises.</p>
-                       </div>
-                   </div>
-               </div>
-               
-               <button class="btn btn-full" onclick="HP.claimReviews()">
-                   Claim & Import Reviews
-               </button>
-           </div>
-
-           <!-- Lead Screen -->
-           <div class="screen" id="lead-screen">
-               <div class="screen-header" style="text-align: center; margin-bottom: var(--space-6);">
-                   <h1 class="modal-title">Review your lead</h1>
-                   <p class="modal-subtitle">We created this from your invoice</p>
-               </div>
-               
-               <div class="lead-preview-card" id="lead-preview">
-                   <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3);">
-                       <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #4285f4, #34a853); border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; font-size: var(--font-size-24); color: var(--white); font-weight: 700;">
-                           <span id="lead-avatar">SM</span>
-                       </div>
-                       <div>
-                           <div style="font-weight: 600; color: var(--text); font-size: var(--font-size-18);" id="lead-name"></div>
-                           <div style="color: var(--text-secondary); font-size: var(--font-size-16);">Kitchen Renovation</div>
-                       </div>
-                       <div style="margin-left: auto; background: var(--primary); color: var(--white); padding: var(--space-1) var(--space-3); border-radius: var(--radius-sm); font-size: var(--font-size-16); font-weight: 600;" id="lead-amount"></div>
-                   </div>
-                   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); font-size: var(--font-size-14); margin-bottom: var(--space-3);">
-                       <div><strong>Email:</strong> <span id="lead-email"></span></div>
-                       <div><strong>Phone:</strong> (555) 123-4567</div>
-                       <div><strong>Location:</strong> Los Angeles, CA</div>
-                       <div><strong>Timeline:</strong> 3-4 weeks</div>
-                   </div>
-                   <div style="padding-top: var(--space-2); border-top: 1px solid rgba(75, 175, 79, 0.2);">
-                       <strong style="color: var(--primary-dark);">Project Details:</strong>
-                       <div style="margin-top: 4px; color: var(--text);">Complete kitchen remodel with custom cabinets, quartz countertops, premium appliances, and designer lighting.</div>
-                   </div>
-               </div>
-               
-               <button class="btn btn-full" onclick="HP.approveLead()" style="margin-top: var(--space-4);">
-                   Looks good – continue
-               </button>
-           </div>
-
-           <!-- Invoice Send Screen -->
-           <!-- Invoice Send Screen -->
-<div class="screen" id="invoice-screen">
-    <div class="screen-header" style="text-align: center; margin-bottom: var(--space-6);">
-        <h1 class="modal-title">Send your invoice</h1>
-        <p class="modal-subtitle">Get paid faster with Houzz Pay</p>
-    </div>
-    
-    <!-- Payment Banner - Prominent at top -->
-    <div class="payment-banner">
-        <div class="payment-banner-content">
-            <div class="payment-banner-header">
-                <div>
-                    <h2 class="payment-banner-title">Get paid faster</h2>
-                    <p class="payment-banner-subtitle">Invoices with Online Payments get paid 5x faster</p>
-                </div>
-                <div class="savings-badge">Save $1,425/month</div>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-top">
+                <svg class="houzz-logo" viewBox="0 0 128 20" xmlns="http://www.w3.org/2000/svg">
+                    <path class="hz-pro-solutions-logo__houzz" fill="currentColor" d="M49.8929 9.99368C49.3605 9.46113 48.7294 9.04036 48.0129 8.73464C47.2931 8.42892 46.5109 8.27441 45.6859 8.27441C44.8609 8.27441 44.0754 8.42892 43.3589 8.73464C42.6424 9.03707 42.0113 9.46113 41.4789 9.99368C40.9464 10.5262 40.5257 11.1508 40.22 11.851C39.9144 12.5545 39.7599 13.3237 39.7599 14.1357C39.7599 14.9477 39.9144 15.7202 40.22 16.4302C40.5257 17.1403 40.9497 17.7649 41.4789 18.2909C42.0113 18.8135 42.6424 19.2343 43.3589 19.5367C44.0787 19.8425 44.8609 19.997 45.6859 19.997C46.5109 19.997 47.2931 19.8425 48.0129 19.5367C48.7294 19.231 49.3638 18.8135 49.8929 18.2909C50.4221 17.7682 50.8461 17.1436 51.1517 16.4302C51.4574 15.7202 51.6119 14.9477 51.6119 14.1357C51.6119 13.3237 51.4574 12.5545 51.1517 11.851C50.8461 11.1475 50.4254 10.5229 49.8929 9.99368ZM48.7623 15.5657C48.6078 15.9963 48.3876 16.3678 48.1049 16.6702C47.8256 16.9726 47.4772 17.2126 47.0696 17.3901C46.6621 17.5644 46.1953 17.6564 45.6826 17.6564C45.1699 17.6564 44.7032 17.5676 44.2956 17.3901C43.888 17.2159 43.5396 16.9726 43.2603 16.6702C42.9776 16.3678 42.7574 15.9963 42.6029 15.5657C42.4452 15.1285 42.3663 14.6485 42.3663 14.1324C42.3663 13.6196 42.4452 13.1363 42.6029 12.6991C42.7574 12.2685 42.9776 11.897 43.2603 11.5946C43.5396 11.2955 43.888 11.0522 44.2956 10.8747C44.7032 10.6972 45.1699 10.6084 45.6826 10.6084C46.192 10.6084 46.6588 10.6972 47.0696 10.8747C47.4772 11.0522 47.8256 11.2922 48.1049 11.5946C48.3843 11.8937 48.6045 12.2652 48.7623 12.6991C48.92 13.1331 48.9989 13.6163 48.9989 14.1324C48.9989 14.6518 48.92 15.1317 48.7623 15.5657Z"></path>
+                    <path class="hz-pro-solutions-logo__houzz" fill="currentColor" d="M34.4056 8.65202C32.7557 7.96826 30.8888 8.25097 29.5807 9.30619V4.60205H26.9513V19.7237H29.5807V13.7802C29.5807 12.6494 29.8699 10.7493 32.0457 10.7493C34.0441 10.7493 34.5108 12.3798 34.5108 13.7802V19.7237H37.1402V12.965C37.1402 11.1767 36.1213 9.36208 34.4056 8.65202Z"></path>
+                    <path class="hz-pro-solutions-logo__houzz" fill="currentColor" d="M67.0496 17.7513V19.7237H76.5812V17.4226H70.3824L76.2525 10.6606V8.54688H67.3783V10.848H73.0808L67.0496 17.5903"></path>
+                    <path class="hz-pro-solutions-logo__houzz" fill="currentColor" d="M78.5532 17.7513V19.7237H88.0848V17.4226H81.886L87.7561 10.6606V8.54688H78.8819V10.848H84.5844L78.5532 17.5903"></path>
+                    <path class="hz-pro-solutions-logo__houzz" fill="currentColor" d="M61.7908 8.54688V14.6514C61.7908 14.9801 61.7481 15.3286 61.6594 15.6869C61.5772 16.0288 61.4359 16.3477 61.2387 16.6435C61.0513 16.9262 60.7982 17.1596 60.486 17.3404C60.1836 17.5179 59.7925 17.6067 59.3258 17.6067C58.859 17.6067 58.4679 17.5179 58.1623 17.3404C57.8533 17.1596 57.6002 16.9262 57.4096 16.6435C57.2157 16.3542 57.0743 16.0321 56.9889 15.6902C56.9001 15.3286 56.8574 14.9801 56.8574 14.6547V8.54688H54.228V14.898C54.228 17.2615 55.2568 18.8559 57.3274 19.6448C57.942 19.8815 58.6158 19.9999 59.3225 19.9999C60.0324 19.9999 60.7029 19.8815 61.3438 19.635C63.8845 18.6586 64.4169 16.5186 64.4169 14.898V8.54688H61.7908Z"></path>
+                    <path class="hz-pro-solutions-logo__logo" fill="currentColor" d="M11.1749 19.7239H17.7484V8.37278L4.60144 4.60224V0H0V19.7239H6.57349V13.1492H11.1749V19.7239Z"></path>
+                    <path class="hz-pro-solutions-logo__pro" fill="currentColor" d="M96.5713 19.727V15.3976H99.7824C102.241 15.3976 103.46 13.8131 103.46 11.9624C103.46 10.1346 102.201 8.54688 99.7824 8.54688H94.9871V19.727C94.9871 19.727 96.5713 19.727 96.5713 19.727ZM99.6411 13.9939H96.5713V9.95056H99.6411C101.064 9.95056 101.814 10.8053 101.814 11.9624C101.814 13.1392 101.104 13.9939 99.6411 13.9939Z"></path>
+                    <path class="hz-pro-solutions-logo__pro" fill="currentColor" d="M114.241 19.727L111.069 15.276C112.815 15.1346 114.077 13.8953 114.077 11.9624C114.077 10.0525 112.755 8.54688 110.399 8.54688H105.603V19.727H107.188V15.3976H109.442L112.368 19.727H114.241ZM110.257 13.9939H107.191V9.95056H110.257C111.661 9.95056 112.453 10.7855 112.453 11.9624C112.453 13.1392 111.72 13.9939 110.257 13.9939Z"></path>
+                    <path class="hz-pro-solutions-logo__pro" fill="currentColor" d="M121.879 19.9707C125.333 19.9707 127.651 17.4296 127.651 14.1358C127.651 10.8419 125.333 8.30078 121.879 8.30078C118.385 8.30078 116.107 10.8419 116.107 14.1358C116.107 17.4296 118.385 19.9707 121.879 19.9707ZM121.879 18.5671C119.338 18.5671 117.734 16.6571 117.734 14.1358C117.734 11.5947 119.338 9.70446 121.879 9.70446C124.38 9.70446 126.024 11.5947 126.024 14.1358C126.027 16.6571 124.38 18.5671 121.879 18.5671Z"></path>
+                </svg>
             </div>
-            
-            <div class="payment-features">
-                <div class="payment-feature">
-                    <div class="payment-feature-icon">💳</div>
-                    <div class="payment-feature-text">Accept all cards & ACH</div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-container">
+            <!-- Assistant Sidebar -->
+            <div class="assistant-sidebar">
+                <div class="assistant-header">
+                    <div class="assistant-title">Setup Progress</div>
+                    <div class="assistant-subtitle">Fir - The Houzz Pro Assistant</div>
                 </div>
-                <div class="payment-feature">
-                    <div class="payment-feature-icon">⚡</div>
-                    <div class="payment-feature-text">Instant notifications</div>
+ 
+                            <div class="progress-steps">
+                <div class="progress-step active" id="step-1">
+                    <div class="step-indicator">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Invoice Intake</div>
+                        <div class="step-description">Upload any invoice</div>
+                    </div>
                 </div>
-                <div class="payment-feature">
-                    <div class="payment-feature-icon">🔒</div>
-                    <div class="payment-feature-text">Bank-level security</div>
+ 
+                <div class="progress-step" id="step-2">
+                    <div class="step-indicator">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Business Profile</div>
+                        <div class="step-description">Auto-extracted details</div>
+                    </div>
+                </div>
+ 
+                <div class="progress-step" id="step-3">
+                    <div class="step-indicator">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Reviews</div>
+                        <div class="step-description">Import your reputation</div>
+                    </div>
+                </div>
+ 
+                <div class="progress-step" id="step-4">
+                    <div class="step-indicator">4</div>
+                    <div class="step-content">
+                        <div class="step-title">Lead</div>
+                        <div class="step-description">Auto-generated client</div>
+                    </div>
+                </div>
+ 
+                <div class="progress-step" id="step-5">
+                    <div class="step-indicator">5</div>
+                    <div class="step-content">
+                        <div class="step-title">Invoice Send</div>
+                        <div class="step-description">Get paid faster</div>
+                    </div>
+                </div>
+
+                <div class="progress-step" id="step-6">
+                    <div class="step-indicator">6</div>
+                    <div class="step-content">
+                        <div class="step-title">Team Setup</div>
+                        <div class="step-description">Invite your crew</div>
+                    </div>
+                </div>
+
+                <div class="progress-step" id="step-7">
+                    <div class="step-indicator">7</div>
+                    <div class="step-content">
+                        <div class="step-title">AI Features</div>
+                        <div class="step-description">2D to 3D conversion</div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="payment-toggle-container">
-                <div class="toggle-info">
-                    <div class="toggle-title">Enable Online Payments</div>
-                    <div class="toggle-description">Let clients pay instantly with credit card or bank transfer</div>
-                </div>
-                <div class="toggle-switch-large" id="payment-toggle" onclick="HP.togglePayment()">
-                    <div class="toggle-slider-large"></div>
+            </div>
+            <!-- Add Team Member Modal -->
+            <div class="modal-overlay" id="team-modal">
+                <div class="modal" style="max-width: 700px;">
+                    <div class="modal-header">
+                        <h2 class="modal-title">👷‍♂️ Add Your Crew Member</h2>
+                        <p class="modal-subtitle">Let's get your team on board and crushing projects together!</p>
+                    </div>
+                    
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: var(--radius-lg); padding: var(--space-4); margin-bottom: var(--space-4); color: var(--white);">
+                        <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2);">
+                            <div style="width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; font-size: var(--font-size-24);">
+                                🚀
+                            </div>
+                            <div>
+                                <div style="font-weight: 600; font-size: var(--font-size-18);">Team Power-Up!</div>
+                                <div style="opacity: 0.9; font-size: var(--font-size-14);">Everyone gets mobile access & real-time updates</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form id="team-form">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); margin-bottom: var(--space-3);">
+                            <div class="form-group">
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-input" placeholder="Mike" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" class="form-input" placeholder="Johnson" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-input" placeholder="mike@yourcompany.com" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Role on the Team</label>
+                            <select class="form-input" required>
+                                <option value="">Select a role...</option>
+                                <option value="project-manager">🏗️ Project Manager</option>
+                                <option value="foreman">👷‍♂️ Foreman</option>
+                                <option value="carpenter">🔨 Carpenter</option>
+                                <option value="electrician">⚡ Electrician</option>
+                                <option value="plumber">🔧 Plumber</option>
+                                <option value="painter">🎨 Painter</option>
+                                <option value="laborer">💪 Laborer</option>
+                                <option value="estimator">📊 Estimator</option>
+                                <option value="office-admin">📋 Office Admin</option>
+                                <option value="other">🛠️ Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Phone Number (Optional)</label>
+                            <input type="tel" class="form-input" placeholder="(555) 123-4567">
+                        </div>
+                        
+                        <div style="background: var(--primary-tint); border: 1px solid var(--primary); border-radius: var(--radius-md); padding: var(--space-3); margin-bottom: var(--space-4);">
+                            <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span style="font-weight: 600; color: var(--primary-dark);">What they'll get:</span>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); font-size: var(--font-size-14); color: var(--text-secondary);">
+                                <div>📱 Mobile app access</div>
+                                <div>📊 Project updates</div>
+                                <div>📝 Time tracking</div>
+                                <div>📸 Photo uploads</div>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <div style="display: flex; gap: var(--space-3); margin-top: var(--space-4);">
+                        <button class="btn btn-secondary" onclick="HP.closeTeamModal()" style="flex: 1;">Cancel</button>
+                        <button class="btn" onclick="HP.sendTeamInvite()" style="flex: 1;">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                            Send Invite
+                        </button>
+                    </div>
                 </div>
             </div>
-            
-            <div class="fee-breakdown" id="fee-breakdown">
-                <div class="promo-banner">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink: 0;">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path>
-                    </svg>
-                    <span>Your first payment on us – no processing fees!</span>
+
+            <!-- Stripe Verification Modal -->
+            <div class="modal-overlay" id="stripe-modal">
+                <div class="modal">
+                    <div class="modal-header">
+                        <h2 class="modal-title">Verify with Stripe</h2>
+                        <p class="modal-subtitle">Complete your account setup to accept online payments</p>
+                    </div>
+                    
+                    <div style="margin-bottom: var(--space-4);">
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-md); padding: var(--space-3); margin-bottom: var(--space-3);">
+                            <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span style="font-weight: 600; color: var(--text);">Secure Verification</span>
+                            </div>
+                            <p style="font-size: var(--font-size-14); color: var(--text-secondary); margin: 0;">Your information is encrypted and secure. Stripe is PCI DSS Level 1 certified.</p>
+                        </div>
+                    </div>
+                    
+                    <form id="stripe-form">
+                        <div class="form-group">
+                            <label class="form-label">Business Legal Name</label>
+                            <input type="text" class="form-input" value="WTS Construction / Camarena & Associates LLC" readonly>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+                            <div class="form-group">
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-input" placeholder="John">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" class="form-input" placeholder="Doe">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Date of Birth</label>
+                            <input type="date" class="form-input">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Social Security Number (Last 4 digits)</label>
+                            <input type="text" class="form-input" placeholder="1234" maxlength="4">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Business Address</label>
+                            <input type="text" class="form-input" value="PO BOX 451386, Los Angeles, CA 90045" readonly>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+                            <div class="form-group">
+                                <label class="form-label">City</label>
+                                <input type="text" class="form-input" value="Los Angeles" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">State</label>
+                                <input type="text" class="form-input" value="CA" readonly>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">ZIP Code</label>
+                            <input type="text" class="form-input" value="90045" readonly>
+                        </div>
+                    </form>
+                    
+                    <div style="display: flex; gap: var(--space-3); margin-top: var(--space-4);">
+                        <button class="btn btn-secondary" onclick="HP.closeStripeModal()" style="flex: 1;">Cancel</button>
+                        <button class="btn" onclick="HP.verifyStripe()" style="flex: 1;">Verify Account</button>
+                    </div>
                 </div>
-                <div class="fee-row">
-                    <span>Invoice amount:</span>
-                    <span id="fee-invoice-amount">$47,500.00</span>
+            </div>
+
+            <!-- Invoice Intake Modal -->
+            <div class="modal-overlay active" id="intake-modal">
+                <div class="modal">
+                    <div class="modal-header">
+                        <h2 class="modal-title">Houzz Pro gets you paid faster</h2>
+                        <p class="modal-subtitle">Email or snap a photo of any paper invoice <br /> you have not yet sent!</p>
+                    </div>
+                    
+                    <div class="upload-area" id="upload-area">
+                        <input type="file" class="upload-input" id="invoice-upload" accept="image/*,.pdf">
+                        <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                        </svg>
+                        <div class="upload-text">Drop invoice here or click to upload</div>
+                        <div class="upload-subtext">Supports PDF, JPG, PNG</div>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: var(--space-3); margin: var(--space-4) 0;">
+                        <div style="flex: 1; height: 1px; background: rgba(26, 26, 26, 0.12);"></div>
+                        <span style="color: var(--text-secondary); font-size: var(--font-size-14);">or</span>
+                        <div style="flex: 1; height: 1px; background: rgba(26, 26, 26, 0.12);"></div>
+                    </div>
+                    
+                    <button class="btn btn-secondary btn-full" onclick="HP.simulateEmailForward()">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        Forward via email
+                    </button>
                 </div>
-                <div class="fee-row">
-                    <span>Processing fee <span style="font-size: 12px; opacity: 0.8;">(normally 2.9% + $0.30)</span>:</span>
-                    <span id="fee-amount" style="position: relative;">
-                        <span style="text-decoration: line-through; opacity: 0.5;">$1,377.80</span>
-                        <span style="color: #10b981; font-weight: 700; margin-left: 8px;">FREE</span>
-                    </span>
+            </div>
+
+            <!-- Business Profile Screen -->
+            <div class="screen" id="business-screen">
+                <div class="screen-header" style="text-align: center; margin-bottom: var(--space-6);">
+                    <h1 class="modal-title">Confirm your business details</h1>
+                    <p class="modal-subtitle">We extracted this from your invoice</p>
                 </div>
-                <div class="fee-row">
-                    <span>You receive:</span>
-                    <span id="fee-net-amount" style="color: #10b981; font-size: 20px;">$47,500.00</span>
+                
+                <form id="business-form" style="max-width: 600px; margin: 0 auto;">
+                    <div class="form-group">
+                        <label class="form-label">Business Name</label>
+                        <input type="text" class="form-input" id="business-name" value="">
+                        <div class="extracted-badge">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            ✨ AI Extracted
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Business Address</label>
+                        <input type="text" class="form-input" id="business-address" value="">
+                        <div class="extracted-badge">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            ✨ AI Extracted
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-input" id="business-phone" value="">
+                            <div class="extracted-badge">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                ✨ AI Extracted
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">License Number</label>
+                            <input type="text" class="form-input" id="business-license" value="">
+                            <div class="extracted-badge">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                ✨ AI Extracted
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn btn-full btn-large" onclick="HP.saveBusinessProfile()" style="margin-top: var(--space-4); max-width: 600px;">
+                        Save & Continue
+                    </button>
+                </form>
+            </div>
+
+            <!-- Reviews Screen -->
+            <div class="screen" id="reviews-screen">
+                <div class="screen-header" style="text-align: center; margin-bottom: var(--space-6);">
+                    <h1 class="modal-title">We found your public reviews!</h1>
+                    <p class="modal-subtitle">Select which reviews to import into your Houzz Pro profile</p>
+                </div>
+                
+                <div class="reviews-summary" style="margin-bottom: var(--space-4); text-align: center;">
+                    <div class="reviews-stat">
+                        <div class="reviews-stat-value">28</div>
+                        <div class="reviews-stat-label">Total Reviews</div>
+                    </div>
+                    <div class="reviews-stat">
+                        <div class="reviews-stat-value">4.9</div>
+                        <div class="reviews-stat-label">Average Rating</div>
+                    </div>
+                    <div class="reviews-stat">
+                        <div class="reviews-stat-value">96%</div>
+                        <div class="reviews-stat-label">5-Star Reviews</div>
+                    </div>
+                </div>
+                
+                <div class="reviews-section">
+                    <div class="reviews-header">
+                        <h3 style="font-size: var(--font-size-18); font-weight: 600;">Select Reviews to Import</h3>
+                        <button class="select-all-toggle" onclick="HP.toggleSelectAll()">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span id="select-all-text">Select All</span>
+                        </button>
+                    </div>
+                    
+                    <div id="reviews-list">
+                        <!-- Reviews will be populated here -->
+                    </div>
+                </div>
+                
+                <div style="text-align: center;">
+                    <button class="btn btn-full btn-large" onclick="HP.claimReviews()" id="claim-reviews-btn" style="max-width: 600px;">
+                        Import <span id="selected-count">0</span> Reviews
+                    </button>
+                </div>
+            </div>
+
+            <!-- Lead Screen -->
+            <div class="screen" id="lead-screen">
+                <div class="screen-header" style="text-align: center; margin-bottom: var(--space-6);">
+                    <h1 class="modal-title">Review your lead</h1>
+                    <p class="modal-subtitle">We created this from your invoice</p>
+                </div>
+                
+                <div class="lead-preview-card" id="lead-preview">
+                    <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3);">
+                        <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #4285f4, #34a853); border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; font-size: var(--font-size-24); color: var(--white); font-weight: 700;">
+                            <span id="lead-avatar">TP</span>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600; color: var(--text); font-size: var(--font-size-18);" id="lead-name"></div>
+                            <div style="color: var(--text-secondary); font-size: var(--font-size-16);">Home Renovation</div>
+                        </div>
+                        <div style="margin-left: auto; background: var(--primary); color: var(--white); padding: var(--space-1) var(--space-3); border-radius: var(--radius-sm); font-size: var(--font-size-16); font-weight: 600;" id="lead-amount"></div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); font-size: var(--font-size-14); margin-bottom: var(--space-3);">
+                        <div><strong>Phone:</strong> <span id="lead-phone"></span></div>
+                        <div><strong>Location:</strong> <span id="lead-location"></span></div>
+                        <div><strong>Date:</strong> 08/16/22</div>
+                        <div><strong>Status:</strong> Ready to invoice</div>
+                    </div>
+                    <div style="padding-top: var(--space-2); border-top: 1px solid rgba(75, 175, 79, 0.2);">
+                        <strong style="color: var(--primary-dark);">Project Details:</strong>
+                        <div style="margin-top: 4px; color: var(--text); font-size: var(--font-size-14);">Interior painting, plumbing repairs, pressure washing, and exterior maintenance work completed.</div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: var(--space-4);">
+                    <button class="btn btn-full btn-large" onclick="HP.approveLead()" style="max-width: 600px;">
+                        Looks good – continue
+                    </button>
+                </div>
+            </div>
+
+            <!-- Invoice Send Screen -->
+            <div class="screen" id="invoice-screen">
+                <div class="screen-header" style="text-align: center; margin-bottom: var(--space-6);">
+                    <h1 class="modal-title">Send your invoice</h1>
+                    <p class="modal-subtitle">Get paid faster with Houzz Pay</p>
+                </div>
+                
+                <!-- Payment Banner - At the top -->
+                <div class="payment-banner">
+                    <div class="payment-banner-content">
+                        <div class="payment-banner-header">
+                            <div>
+                                <h2 class="payment-banner-title">Get paid faster</h2>
+                                <p class="payment-banner-subtitle">Online Payments get paid 5x faster</p>
+                            </div>
+                            <div class="savings-badge">Save $78/month</div>
+                        </div>
+                        
+                        <div class="payment-features">
+                            <div class="payment-feature">
+                                <div class="payment-feature-icon">
+                                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                                    </svg>
+                                </div>
+                                <div class="payment-feature-text">Accept all cards & ACH</div>
+                            </div>
+                            <div class="payment-feature">
+                                <div class="payment-feature-icon">
+                                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                                <div class="payment-feature-text">Instant notifications</div>
+                            </div>
+                            <div class="payment-feature">
+                                <div class="payment-feature-icon">
+                                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                    </svg>
+                                </div>
+                                <div class="payment-feature-text">Bank-level security</div>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-toggle-container">
+                            <div class="toggle-info">
+                                <div class="toggle-title">Enable Online Payments</div>
+                                <div class="toggle-description">Let clients pay instantly with credit card or bank transfer</div>
+                            </div>
+                            <div class="toggle-switch-large" id="payment-toggle" onclick="HP.togglePayment()">
+                                <div class="toggle-slider-large"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="fee-breakdown" id="fee-breakdown">
+                            <div class="promo-banner">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path>
+                                </svg>
+                                <span>First payment FREE – no processing fees!</span>
+                            </div>
+                            <div class="fee-row">
+                                <span>Invoice amount:</span>
+                                <span id="fee-invoice-amount">$2,834.02</span>
+                            </div>
+                            <div class="fee-row">
+                                <span>Processing fee <span style="font-size: 12px; opacity: 0.8;">(normally 2.9% + $0.30)</span>:</span>
+                                <span id="fee-amount" style="position: relative;">
+                                    <span style="text-decoration: line-through; opacity: 0.5;">$82.59</span>
+                                    <span style="color: #10b981; font-weight: 700; margin-left: 8px;">FREE</span>
+                                </span>
+                            </div>
+                            <div class="fee-row">
+                                <span>You receive:</span>
+                                <span id="fee-net-amount" style="color: #10b981; font-size: 20px;">$2,834.02</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Invoice Preview -->
+                <div class="invoice-card">
+                    <div class="invoice-header">
+                        <div>
+                            <h3 style="font-size: var(--font-size-24); font-weight: 700; color: var(--text); margin-bottom: var(--space-1);">WTS Construction / Camarena & Associates LLC</h3>
+                            <p style="color: var(--text-secondary); font-size: var(--font-size-14);">PO BOX 451386, Los Angeles, CA 90045</p>
+                            <p style="color: var(--text-secondary); font-size: var(--font-size-14);">310-310-1415 | CSLB No. 1033867</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: var(--font-size-18); font-weight: 600; color: var(--text); margin-bottom: var(--space-1);">INVOICE</div>
+                            <div style="color: var(--text-secondary); font-size: var(--font-size-14);">#INV-2024-001</div>
+                            <div style="color: var(--text-secondary); font-size: var(--font-size-14);">Date: 08/16/2024</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: var(--space-4);">
+                        <div style="font-weight: 600; color: var(--text); margin-bottom: var(--space-1);">Bill To:</div>
+                        <div style="color: var(--text); font-size: var(--font-size-16);">Tejas Pandey</div>
+                        <div style="color: var(--text-secondary); font-size: var(--font-size-14);">2019 42nd St.</div>
+                        <div style="color: var(--text-secondary); font-size: var(--font-size-14);">1-512-450-8922</div>
+                    </div>
+                    
+                    <div class="invoice-items">
+                        <div class="invoice-items-header">
+                            <div>Description</div>
+                            <div>Category</div>
+                            <div>Amount</div>
+                        </div>
+                        
+                        <div class="invoice-item">
+                            <div class="item-description">
+                                <div class="item-category">Interior Painting</div>
+                                <div class="item-details">Living room, dining room, and hallway walls - premium paint, 2 coats</div>
+                            </div>
+                            <div>Painting</div>
+                            <div class="item-price">$1,250.00</div>
+                        </div>
+                        
+                        <div class="invoice-item">
+                            <div class="item-description">
+                                <div class="item-category">Plumbing Repairs</div>
+                                <div class="item-details">Kitchen sink drain repair, bathroom faucet replacement</div>
+                            </div>
+                            <div>Plumbing</div>
+                            <div class="item-price">$485.00</div>
+                        </div>
+                        
+                        <div class="invoice-item">
+                            <div class="item-description">
+                                <div class="item-category">Pressure Washing</div>
+                                <div class="item-details">Exterior house siding and driveway cleaning</div>
+                            </div>
+                            <div>Exterior</div>
+                            <div class="item-price">$320.00</div>
+                        </div>
+                        
+                        <div class="invoice-item">
+                            <div class="item-description">
+                                <div class="item-category">Exterior Maintenance</div>
+                                <div class="item-details">Gutter cleaning, minor roof repairs, window caulking</div>
+                            </div>
+                            <div>Maintenance</div>
+                            <div class="item-price">$557.00</div>
+                        </div>
+                    </div>
+                    
+                    <div class="invoice-totals">
+                        <div class="invoice-total-row">
+                            <span>Subtotal:</span>
+                            <span>$2,612.00</span>
+                        </div>
+                        <div class="invoice-total-row">
+                            <span>Tax (8.5%):</span>
+                            <span>$222.02</span>
+                        </div>
+                        <div class="invoice-total-row final">
+                            <span>Total:</span>
+                            <span>$2,834.02</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: var(--space-6);">
+                    <button class="btn btn-full btn-large" onclick="HP.sendInvoice()" style="max-width: 600px;">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                        </svg>
+                        Send Invoice & Get Paid
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="invoice-card">
-        <div class="invoice-header">
-            <div>
-                <h2 style="font-size: var(--font-size-24); font-weight: 700; color: var(--text); margin-bottom: 4px;" id="invoice-business-name"></h2>
-                <div style="color: var(--text-secondary); font-size: var(--font-size-14);">Invoice #1001</div>
-            </div>
-            <div style="text-align: right;">
-                <div style="color: var(--text-secondary); font-size: var(--font-size-14);">Date</div>
-                <div style="font-weight: 600;" id="invoice-date"></div>
-            </div>
-        </div>
+    <script>
+        // Houzz Pro Demo Application
+        const HP = {
+            currentStep: 0,
+            steps: ['upload', 'business', 'reviews', 'lead', 'invoice'],
+            
+            // Initialize the application
+            init() {
+                this.setupEventListeners();
+                this.populateReviews();
+                this.setupLeadData();
+            },
 
-        <div style="margin-bottom: var(--space-4);">
-            <h3 style="font-size: var(--font-size-16); font-weight: 600; margin-bottom: var(--space-2);">Bill To:</h3>
-            <div id="invoice-client-info">
-                <div style="font-weight: 600;" id="invoice-client-name"></div>
-                <div style="color: var(--text-secondary);" id="invoice-client-email"></div>
-                <div style="color: var(--text-secondary);">(555) 123-4567</div>
-                <div style="color: var(--text-secondary);">Los Angeles, CA</div>
-            </div>
-        </div>
+            // Setup all event listeners
+            // -- upload interactions (no cloning needed) -----------------
+            setupEventListeners() {
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput   = document.getElementById('invoice-upload');
 
-        <div style="margin-bottom: var(--space-4);">
-            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--space-2); padding: var(--space-2) 0; border-bottom: 2px solid var(--primary); font-weight: 600; font-size: var(--font-size-14);">
-                <div>Description</div>
-                <div style="text-align: center;">Qty</div>
-                <div style="text-align: center;">Rate</div>
-                <div style="text-align: right;">Total</div>
-            </div>
-            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--space-2); padding: var(--space-2) 0; border-bottom: 1px solid rgba(26, 26, 26, 0.08);">
-                <div>Kitchen Design & Planning</div>
-                <div style="text-align: center;">1</div>
-                <div style="text-align: center;">$2,500</div>
-                <div style="text-align: right;">$2,500</div>
-            </div>
-            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--space-2); padding: var(--space-2) 0; border-bottom: 1px solid rgba(26, 26, 26, 0.08);">
-                <div>Custom Cabinet Installation</div>
-                <div style="text-align: center;">1</div>
-                <div style="text-align: center;">$25,000</div>
-                <div style="text-align: right;">$25,000</div>
-            </div>
-            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--space-2); padding: var(--space-2) 0; border-bottom: 1px solid rgba(26, 26, 26, 0.08);">
-                <div>Quartz Countertops</div>
-                <div style="text-align: center;">1</div>
-                <div style="text-align: center;">$8,000</div>
-                <div style="text-align: right;">$8,000</div>
-            </div>
-            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--space-2); padding: var(--space-2) 0; border-bottom: 1px solid rgba(26, 26, 26, 0.08);">
-                <div>Premium Appliances</div>
-                <div style="text-align: center;">1</div>
-                <div style="text-align: center;">$12,000</div>
-                <div style="text-align: right;">$12,000</div>
-            </div>
-        </div>
+            // click ➜ open dialog
+            uploadArea.addEventListener('click',   () => fileInput.click());
 
-        <div style="margin-top: var(--space-4); padding-top: var(--space-3); border-top: 2px solid var(--primary);">
-            <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-1);">
-                <span>Subtotal:</span>
-                <span id="invoice-subtotal">$47,500</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; font-size: var(--font-size-18); font-weight: 700; color: var(--primary);">
-                <span>Total:</span>
-                <span id="invoice-total">$47,500</span>
-            </div>
-        </div>
-    </div>
+            // drag states
+            uploadArea.addEventListener('dragover',  e => { e.preventDefault(); uploadArea.classList.add('dragging'); });
+            uploadArea.addEventListener('dragleave', e => uploadArea.classList.remove('dragging'));
+            uploadArea.addEventListener('drop',      e => {
+                e.preventDefault(); uploadArea.classList.remove('dragging');
+                if (e.dataTransfer.files.length) HP.handleFileUpload(e.dataTransfer.files[0]);
+            });
 
-    <button class="btn btn-full btn-large" onclick="HP.sendInvoice()">
-        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-        </svg>
-        Send Invoice via Houzz Pay
-    </button>
-</div>
-           <!-- Success Screen -->
-           <div class="screen" id="success-screen">
-               <div class="success-animation">
-                   <div class="checkmark">✓</div>
-                   <h1 style="font-size: var(--font-size-48); font-weight: 700; margin-bottom: var(--space-2);">You're all set!</h1>
-                   <p style="font-size: var(--font-size-18); color: var(--text-secondary);">Your invoice has been sent and you'll be notified when it's paid</p>
-               </div>
-           </div>
-       </div>
+            // chosen via dialog
+            fileInput.addEventListener('change', e => {
+                if (e.target.files.length) HP.handleFileUpload(e.target.files[0]);
+            });
 
-       <!-- Assistant Sidebar -->
-       <div class="assistant-sidebar">
-           <div class="assistant-header">
-               <div class="assistant-title">Setup Progress</div>
-               <div class="assistant-subtitle">AI-powered onboarding</div>
-           </div>
+            // Also add a direct click handler to the file input itself
+            fileInput.style.display = 'none';
+            fileInput.style.position = 'absolute';
+            fileInput.style.opacity = '0';
+            fileInput.style.pointerEvents = 'none';
+        },
 
-           <div class="progress-steps">
-               <div class="progress-step active" id="step-1">
-                   <div class="step-indicator">1</div>
-                   <div class="step-content">
-                       <div class="step-title">Invoice Intake</div>
-                       <div class="step-description">Upload any invoice</div>
-                   </div>
-               </div>
+            // Handle file upload
+            handleFileUpload(file) {
+                if (!file) return;
+                
+                // Show loading state
+                const uploadArea = document.getElementById('upload-area');
+                uploadArea.innerHTML = `
+                    <div style="text-align: center;">
+                        <div style="width: 64px; height: 64px; margin: 0 auto var(--space-3); border: 3px solid var(--primary); border-top: 3px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                        <div class="upload-text">Processing your invoice...</div>
+                        <div class="upload-subtext">Extracting business details and creating your lead</div>
+                    </div>
+                `;
 
-               <div class="progress-step" id="step-2">
-                   <div class="step-indicator">2</div>
-                   <div class="step-content">
-                       <div class="step-title">Business Profile</div>
-                       <div class="step-description">Auto-extracted details</div>
-                   </div>
-               </div>
+                // Simulate processing delay
+                setTimeout(() => {
+                    this.showBusinessScreen();
+                }, 2000);
+            },
 
-               <div class="progress-step" id="step-3">
-                   <div class="step-indicator">3</div>
-                   <div class="step-content">
-                       <div class="step-title">Reviews</div>
-                       <div class="step-description">Import your reputation</div>
-                   </div>
-               </div>
+            // Simulate email forward
+            simulateEmailForward() {
+                const uploadArea = document.getElementById('upload-area');
+                uploadArea.innerHTML = `
+                    <div style="text-align: center;">
+                        <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        <div class="upload-text">Email sent successfully!</div>
+                        <div class="upload-subtext">We'll process your invoice and notify you when ready</div>
+                    </div>
+                `;
 
-               <div class="progress-step" id="step-4">
-                   <div class="step-indicator">4</div>
-                   <div class="step-content">
-                       <div class="step-title">Lead</div>
-                       <div class="step-description">Auto-generated client</div>
-                   </div>
-               </div>
+                setTimeout(() => {
+                    this.showBusinessScreen();
+                }, 1500);
+            },
 
-               <div class="progress-step" id="step-5">
-                   <div class="step-indicator">5</div>
-                   <div class="step-content">
-                       <div class="step-title">Invoice Send</div>
-                       <div class="step-description">Get paid faster</div>
-                   </div>
-               </div>
-           </div>
-       </div>
-   </div>
+            // Show business profile screen
+            showBusinessScreen() {
+                document.getElementById('intake-modal').classList.remove('active');
+                document.getElementById('business-screen').classList.add('active');
+                
+                // Populate with extracted data from the sample invoice
+                document.getElementById('business-name').value = 'WTS Construction / Camarena & Associates LLC';
+                document.getElementById('business-address').value = 'PO BOX 451386, Los Angeles, CA 90045';
+                document.getElementById('business-phone').value = '310-310-1415';
+                document.getElementById('business-license').value = 'CSLB No. 1033867';
+                
+                this.updateProgress(2);
+            },
 
-   <!-- Toast Notification -->
-   <div class="toast" id="toast"></div>
+            // Save business profile and continue
+            saveBusinessProfile() {
+                this.showReviewsScreen();
+                this.updateProgress(3);
+            },
 
-   <script>
-       // Houzz Pro namespace
-       window.HP = {
-           currentStep: 1,
-           extractedData: null,
-           reviewsClaimed: false,
-           paymentEnabled: false,
-           invoiceAmount: 47500,
+            // Show reviews screen
+            showReviewsScreen() {
+                document.getElementById('business-screen').classList.remove('active');
+                document.getElementById('reviews-screen').classList.add('active');
+            },
 
-           // Initialize
-           init() {
-               // Set up event listeners
-               const uploadArea = document.getElementById('upload-area');
-               const uploadInput = document.getElementById('invoice-upload');
-               
-               uploadArea.addEventListener('dragover', (e) => {
-                   e.preventDefault();
-                   uploadArea.classList.add('dragging');
-               });
-               
-               uploadArea.addEventListener('dragleave', () => {
-                   uploadArea.classList.remove('uploading');
-                   uploadArea.classList.remove('dragging');
-               });
-               
-               uploadArea.addEventListener('drop', (e) => {
-                   e.preventDefault();
-                   uploadArea.classList.remove('dragging');
-                   const files = e.dataTransfer.files;
-                   if (files.length > 0) {
-                       this.handleFileUpload(files[0]);
-                   }
-               });
-               
-               uploadInput.addEventListener('change', (e) => {
-                   if (e.target.files.length > 0) {
-                       this.handleFileUpload(e.target.files[0]);
-                   }
-               });
+            // Populate reviews data
+            populateReviews() {
+                const reviews = [
+                    {
+                        name: 'Sarah Johnson',
+                        rating: 5,
+                        text: 'Excellent work! The team was professional and completed our kitchen renovation on time and within budget.',
+                        source: 'Google',
+                        avatar: 'SJ'
+                    },
+                    {
+                        name: 'Mike Chen',
+                        rating: 5,
+                        text: 'Great communication throughout the project. Quality workmanship and attention to detail.',
+                        source: 'Yelp',
+                        avatar: 'MC'
+                    },
+                    {
+                        name: 'Lisa Rodriguez',
+                        rating: 5,
+                        text: 'Highly recommend! They transformed our outdated bathroom into a modern oasis.',
+                        source: 'Google',
+                        avatar: 'LR'
+                    },
+                    {
+                        name: 'David Thompson',
+                        rating: 4,
+                        text: 'Good work overall. Minor delays but the final result was worth it.',
+                        source: 'Yelp',
+                        avatar: 'DT'
+                    },
+                    {
+                        name: 'Jennifer Park',
+                        rating: 5,
+                        text: 'Amazing service! They handled everything from design to completion perfectly.',
+                        source: 'Google',
+                        avatar: 'JP'
+                    }
+                ];
 
-               // Set today's date
-               const today = new Date();
-               document.getElementById('invoice-date').textContent = today.toLocaleDateString();
-           },
+                const reviewsList = document.getElementById('reviews-list');
+                reviewsList.innerHTML = reviews.map((review, index) => `
+                    <div class="review-card" onclick="HP.toggleReview(${index})" data-index="${index}">
+                        <div class="checkbox"></div>
+                        <div class="review-avatar">${review.avatar}</div>
+                        <div class="review-content">
+                            <div class="review-header">
+                                <span class="review-name">${review.name}</span>
+                                <span class="review-stars">${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}</span>
+                                <span class="review-source-badge">
+                                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                    </svg>
+                                    ${review.source}
+                                </span>
+                            </div>
+                            <div class="review-text">${review.text}</div>
+                        </div>
+                    </div>
+                `).join('');
+            },
 
-           // Show toast notification
-           showToast(message) {
-               const toast = document.getElementById('toast');
-               toast.textContent = message;
-               toast.classList.add('show');
-               setTimeout(() => toast.classList.remove('show'), 3000);
-           },
+            // Toggle individual review selection
+            toggleReview(index) {
+                const reviewCard = document.querySelector(`[data-index="${index}"]`);
+                reviewCard.classList.toggle('selected');
+                this.updateSelectedCount();
+            },
 
-           // Update progress steps
-           updateProgress(step) {
-               // Mark previous steps as completed
-               for (let i = 1; i < step; i++) {
-                   const stepEl = document.getElementById(`step-${i}`);
-                   stepEl.classList.remove('active');
-                   stepEl.classList.add('completed');
-                   stepEl.querySelector('.step-indicator').innerHTML = '✓';
-               }
-               
-               // Mark current step as active
-               const currentStepEl = document.getElementById(`step-${step}`);
-               currentStepEl.classList.add('active');
-               
-               this.currentStep = step;
-           },
+            // Toggle select all reviews
+            toggleSelectAll() {
+                const reviewCards = document.querySelectorAll('.review-card');
+                const selectAllText = document.getElementById('select-all-text');
+                const allSelected = Array.from(reviewCards).every(card => card.classList.contains('selected'));
+                
+                reviewCards.forEach(card => {
+                    if (allSelected) {
+                        card.classList.remove('selected');
+                    } else {
+                        card.classList.add('selected');
+                    }
+                });
+                
+                selectAllText.textContent = allSelected ? 'Select All' : 'Deselect All';
+                this.updateSelectedCount();
+            },
 
-           // Handle file upload
-           handleFileUpload(file) {
-               this.showToast('Processing invoice...');
-               
-               // Close modal and show processing
-               document.getElementById('intake-modal').classList.remove('active');
-               
-               // Extract invoice data after delay
-               setTimeout(() => {
-                   this.processInvoice();
-               }, 800);
-           },
+            // Update selected count
+            updateSelectedCount() {
+                const selectedCount = document.querySelectorAll('.review-card.selected').length;
+                document.getElementById('selected-count').textContent = selectedCount;
+            },
 
-           // Simulate email forward
-           simulateEmailForward() {
-               this.showToast('Email forward simulated...');
-               
-               // Close modal and process
-               document.getElementById('intake-modal').classList.remove('active');
-               
-               setTimeout(() => {
-                   this.processInvoice();
-               }, 800);
-           },
+            // Claim reviews and continue
+            claimReviews() {
+                this.showLeadScreen();
+                this.updateProgress(4);
+            },
 
-           // Process invoice (stub)
-           processInvoice() {
-               // Call extraction function
-               this.extractedData = this.extractInvoiceData();
-               
-               // Fill business form
-               document.getElementById('business-name').value = this.extractedData.businessName;
-               document.getElementById('business-address').value = this.extractedData.address;
-               document.getElementById('business-phone').value = this.extractedData.phone;
-               document.getElementById('business-email').value = this.extractedData.email;
-               
-               // Show business screen
-               document.getElementById('business-screen').classList.add('active');
-               this.updateProgress(2);
-               
-               this.showToast('Invoice data extracted successfully!');
-           },
+            // Show lead screen
+            showLeadScreen() {
+                document.getElementById('reviews-screen').classList.remove('active');
+                document.getElementById('lead-screen').classList.add('active');
+            },
 
-           // Stub extraction function
-           extractInvoiceData(blob) {
-               return {
-                   businessName: "Premium Home Renovations",
-                   address: "123 Main St, Los Angeles CA 90210",
-                   phone: "(555) 123-4567",
-                   email: "info@premiumhome.com",
-                   clientName: "Sarah Mitchell",
-                   clientEmail: "sarah.mitchell@email.com",
-                   amount: "47500"
-               };
-           },
+            // Setup lead data
+            setupLeadData() {
+                document.getElementById('lead-name').textContent = 'Tejas Pandey';
+                document.getElementById('lead-phone').textContent = '1-512-450-8922';
+                document.getElementById('lead-location').textContent = '2019 42nd St.';
+                document.getElementById('lead-amount').textContent = '$2,612';
+                document.getElementById('lead-avatar').textContent = 'TP';
+            },
 
-           // Save business profile
-           saveBusinessProfile() {
-               // Hide current screen
-               document.getElementById('business-screen').classList.remove('active');
-               
-               // Show reviews screen
-               document.getElementById('reviews-screen').classList.add('active');
-               this.updateProgress(3);
-               
-               this.showToast('Business profile saved!');
-           },
+            // Approve lead and continue
+            approveLead() {
+                this.showInvoiceScreen();
+                this.updateProgress(5);
+            },
 
-           // Claim reviews
-           claimReviews() {
-               this.reviewsClaimed = true;
-               
-               // Hide current screen
-               document.getElementById('reviews-screen').classList.remove('active');
-               
-               // Populate lead with extracted data
-               const initials = this.extractedData.clientName.split(' ').map(n => n[0]).join('');
-               document.getElementById('lead-avatar').textContent = initials;
-               document.getElementById('lead-name').textContent = this.extractedData.clientName;
-               document.getElementById('lead-email').textContent = this.extractedData.clientEmail;
-               document.getElementById('lead-amount').textContent = `$${parseInt(this.extractedData.amount).toLocaleString()}`;
-               
-               // Show lead screen
-               document.getElementById('lead-screen').classList.add('active');
-               this.updateProgress(4);
-               
-               this.showToast('Reviews claimed successfully!');
-           },
+            // Show invoice screen
+            showInvoiceScreen() {
+                document.getElementById('lead-screen').classList.remove('active');
+                document.getElementById('invoice-screen').classList.add('active');
+            },
 
-           // Approve lead
-           approveLead() {
-               // Hide current screen
-               document.getElementById('lead-screen').classList.remove('active');
-               
-               // Populate invoice with data
-               document.getElementById('invoice-business-name').textContent = this.extractedData.businessName;
-               document.getElementById('invoice-client-name').textContent = this.extractedData.clientName;
-               document.getElementById('invoice-client-email').textContent = this.extractedData.clientEmail;
-               document.getElementById('invoice-subtotal').textContent = `$${parseInt(this.extractedData.amount).toLocaleString()}`;
-               document.getElementById('invoice-total').textContent = `$${parseInt(this.extractedData.amount).toLocaleString()}`;
-               
-               // Store amount for fee calculation
-               this.invoiceAmount = parseInt(this.extractedData.amount);
-               
-               // Update fee breakdown amounts
-               document.getElementById('fee-invoice-amount').textContent = `$${this.invoiceAmount.toLocaleString()}.00`;
-               
-               // Show invoice screen
-               document.getElementById('invoice-screen').classList.add('active');
-               this.updateProgress(5);
-               
-               this.showToast('Lead approved!');
-           },
-
-           // Toggle payment
-           // Toggle payment
+            // Toggle payment processing
             togglePayment() {
                 const toggle = document.getElementById('payment-toggle');
                 const feeBreakdown = document.getElementById('fee-breakdown');
                 
-                this.paymentEnabled = !this.paymentEnabled;
+                toggle.classList.toggle('active');
                 
-                if (this.paymentEnabled) {
-                    toggle.classList.add('active');
+                if (toggle.classList.contains('active')) {
                     feeBreakdown.classList.add('active');
-                    
-                    // For first payment, fees are free
-                    document.getElementById('fee-amount').innerHTML = `
-                        <span style="text-decoration: line-through; opacity: 0.5;">$${this.calcFee(this.invoiceAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                        <span style="color: #10b981; font-weight: 700; margin-left: 8px;">FREE</span>
-                    `;
-                    document.getElementById('fee-net-amount').textContent = `$${this.invoiceAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                    
-                    this.showToast('Online payments enabled – first payment FREE!');
+                    // Show Stripe verification modal
+                    setTimeout(() => {
+                        this.showStripeModal();
+                    }, 300);
                 } else {
-                    toggle.classList.remove('active');
                     feeBreakdown.classList.remove('active');
-                    
-                    this.showToast('Online payments disabled');
                 }
             },
 
-           // Calculate fee
-           calcFee(amount) {
-               return (amount * 0.029) + 0.30;
-           },
+            // Show Stripe verification modal
+            showStripeModal() {
+                document.getElementById('stripe-modal').classList.add('active');
+            },
 
-           // Send invoice
-           sendInvoice() {
-               this.showToast('Sending invoice...');
-               
-               // Simulate sending
-               setTimeout(() => {
-                   // Hide invoice screen
-                   document.getElementById('invoice-screen').classList.remove('active');
-                   
-                   // Show success screen
-                   document.getElementById('success-screen').classList.add('active');
-                   
-                   // Mark all steps as completed
-                   for (let i = 1; i <= 5; i++) {
-                       const stepEl = document.getElementById(`step-${i}`);
-                       stepEl.classList.remove('active');
-                       stepEl.classList.add('completed');
-                       stepEl.querySelector('.step-indicator').innerHTML = '✓';
-                   }
-                   
-                   this.showToast('Invoice emailed – we\'ll notify you when it\'s paid');
-               }, 1500);
-           }
-       };
+            // Close Stripe modal
+            closeStripeModal() {
+                document.getElementById('stripe-modal').classList.remove('active');
+                // Keep payment toggle on when closing modal
+                // Only turn off if user explicitly cancels
+            },
 
-       // Initialize on load
-       document.addEventListener('DOMContentLoaded', () => {
-           HP.init();
-       });
-   </script>
+            // Verify Stripe account
+            verifyStripe() {
+                const button = event.target;
+                const originalText = button.textContent;
+                
+                // Show loading state
+                button.innerHTML = `
+                    <div style="width: 16px; height: 16px; border: 2px solid transparent; border-top: 2px solid currentColor; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 8px;"></div>
+                    Verifying...
+                `;
+                button.disabled = true;
+                
+                // Simulate verification process
+                setTimeout(() => {
+                    this.closeStripeModal();
+                    this.showToast('Account verified successfully! You can now accept online payments.');
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    
+                    // Keep payment toggle on after successful verification
+                    const toggle = document.getElementById('payment-toggle');
+                    const feeBreakdown = document.getElementById('fee-breakdown');
+                    toggle.classList.add('active');
+                    feeBreakdown.classList.add('active');
+                }, 2000);
+            },
+
+            // Show toast notification
+            showToast(message) {
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                
+                setTimeout(() => toast.classList.add('show'), 100);
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => document.body.removeChild(toast), 300);
+                }, 3000);
+            },
+
+            // Update progress steps
+            updateProgress(step) {
+                // Mark previous steps as completed
+                for (let i = 1; i < step; i++) {
+                    const stepEl = document.getElementById(`step-${i}`);
+                    if (stepEl) {
+                        stepEl.classList.remove('active');
+                        stepEl.classList.add('completed');
+                        stepEl.querySelector('.step-indicator').innerHTML = '✓';
+                    }
+                }
+                
+                // Mark current step as active
+                const currentStepEl = document.getElementById(`step-${step}`);
+                if (currentStepEl) {
+                    currentStepEl.classList.add('active');
+                }
+                
+                this.currentStep = step;
+            },
+
+            // Send invoice functionality
+            sendInvoice() {
+                const button = event.target.closest('button');
+                const originalText = button.innerHTML;
+                
+                // Show loading state
+                button.innerHTML = `
+                    <div style="width: 20px; height: 20px; border: 2px solid transparent; border-top: 2px solid currentColor; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 8px;"></div>
+                    Sending Invoice...
+                `;
+                button.disabled = true;
+                
+                // Simulate sending
+                setTimeout(() => {
+                    this.showSuccessScreen();
+                }, 2000);
+            },
+
+            // Show success screen
+            showSuccessScreen() {
+                document.getElementById('invoice-screen').classList.remove('active');
+                
+                // Create success screen
+                const successScreen = document.createElement('div');
+                successScreen.className = 'screen active';
+                successScreen.id = 'success-screen';
+                successScreen.innerHTML = `
+                    <div class="success-animation">
+                        <div class="checkmark">✓</div>
+                        <h1 style="font-size: var(--font-size-32); font-weight: 700; color: var(--text); margin-bottom: var(--space-2);">Invoice Sent Successfully!</h1>
+                        <p style="font-size: var(--font-size-18); color: var(--text-secondary); margin-bottom: var(--space-6);">Your client will receive the invoice and can pay instantly online.</p>
+                        
+                        <div style="background: var(--primary-tint); border: 1px solid var(--primary); border-radius: var(--radius-lg); padding: var(--space-4); margin-bottom: var(--space-6);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3);">
+                                <div>
+                                    <div style="font-weight: 600; color: var(--text); font-size: var(--font-size-18);">Payment Status</div>
+                                </div>
+                                <div style="background: #fbbf24; color: var(--white); padding: var(--space-1) var(--space-3); border-radius: var(--radius-sm); font-size: var(--font-size-14); font-weight: 600;">
+                                    Pending
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); font-size: var(--font-size-14);">
+                                <div><strong>Invoice Amount:</strong> $2,834.02</div>
+                                <div><strong>Processing Fee:</strong> FREE</div>
+                                <div><strong>You'll Receive:</strong> $2,834.02</div>
+                                <div><strong>Estimated Payment:</strong> 1-3 days</div>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <button class="btn btn-full btn-large" onclick="HP.completeSetup()" style="max-width: 600px;">
+                                Complete Setup
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                document.querySelector('.main-container').appendChild(successScreen);
+            },
+
+            // Complete setup
+            completeSetup() {
+                this.showTeamMembersScreen();
+                this.updateProgress(6);
+            },
+
+            // Show team members screen
+            showTeamMembersScreen() {
+                document.getElementById('success-screen').remove();
+                
+                // Create team members screen
+                const teamScreen = document.createElement('div');
+                teamScreen.className = 'screen active';
+                teamScreen.id = 'team-screen';
+                teamScreen.innerHTML = `
+                    <div class="screen-header" style="text-align: center; margin-bottom: var(--space-6);">
+                        <h1 class="modal-title">Invite your team</h1>
+                        <p class="modal-subtitle">Collaborate with your crew and get more done together</p>
+                    </div>
+                    
+                    <div style="max-width: 600px; margin: 0 auto;">
+                        <div style="background: var(--primary-tint); border: 1px solid var(--primary); border-radius: var(--radius-lg); padding: var(--space-4); margin-bottom: var(--space-4);">
+                            <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3);">
+                                <div style="width: 48px; height: 48px; background: var(--primary); border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 600;">
+                                    JD
+                                </div>
+                                <div>
+                                    <div style="font-weight: 600; color: var(--text);">John Doe</div>
+                                    <div style="color: var(--text-secondary); font-size: var(--font-size-14);">Project Manager</div>
+                                </div>
+                                <div style="margin-left: auto; background: var(--primary); color: var(--white); padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); font-size: var(--font-size-14); font-weight: 600;">
+                                    Owner
+                                </div>
+                            </div>
+                            <div style="color: var(--text-secondary); font-size: var(--font-size-14);">john.doe@wtsconstruction.com</div>
+                        </div>
+                        
+                        <div style="text-align: center; margin-bottom: var(--space-4);">
+                            <button class="btn btn-secondary" onclick="HP.addTeamMember()">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                Add Team Member
+                            </button>
+                        </div>
+                        
+                        <div style="background: var(--neutral); border-radius: var(--radius-md); padding: var(--space-4); margin-bottom: var(--space-4);">
+                            <h3 style="font-size: var(--font-size-18); font-weight: 600; color: var(--text); margin-bottom: var(--space-2);">Team Benefits</h3>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); font-size: var(--font-size-14);">
+                                <div style="display: flex; align-items: center; gap: var(--space-2);">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span>Real-time collaboration</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: var(--space-2);">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span>Role-based permissions</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: var(--space-2);">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span>Mobile app access</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: var(--space-2);">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span>Project sharing</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; display: flex; gap: var(--space-3); justify-content: center;">
+                            <button class="btn btn-large" onclick="HP.skipTeamMembers()" style="min-width: 140px;">
+                                Skip for now
+                            </button>
+                            <button class="btn btn-large" onclick="HP.continueToAI()" style="min-width: 140px;">
+                                Continue
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                document.querySelector('.main-container').appendChild(teamScreen);
+            },
+
+            // Add team member
+            addTeamMember() {
+                this.showTeamModal();
+            },
+
+            // Show team modal
+            showTeamModal() {
+                document.getElementById('team-modal').classList.add('active');
+            },
+
+            // Close team modal
+            closeTeamModal() {
+                document.getElementById('team-modal').classList.remove('active');
+            },
+
+            // Send team invite
+            sendTeamInvite() {
+                const button = event.target.closest('button');
+                const originalText = button.innerHTML;
+                
+                // Show loading state
+                button.innerHTML = `
+                    <div style="width: 16px; height: 16px; border: 2px solid transparent; border-top: 2px solid currentColor; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 8px;"></div>
+                    Sending Invite...
+                `;
+                button.disabled = true;
+                
+                // Simulate sending invite
+                setTimeout(() => {
+                    this.closeTeamModal();
+                    this.showToast('🎉 Team invite sent! They\'ll get access to the mobile app and project updates.');
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }, 2000);
+            },
+
+            // Skip team members
+            skipTeamMembers() {
+                this.showAIFeaturesScreen();
+                this.updateProgress(7);
+            },
+
+            // Continue to AI features
+            continueToAI() {
+                this.showAIFeaturesScreen();
+                this.updateProgress(7);
+            },
+
+            // Show AI features screen
+            showAIFeaturesScreen() {
+                const teamScreen = document.getElementById('team-screen');
+                if (teamScreen) teamScreen.remove();
+                
+                // Create AI features screen
+                const aiScreen = document.createElement('div');
+                aiScreen.className = 'screen active';
+                aiScreen.id = 'ai-screen';
+                aiScreen.innerHTML = `
+                    <div class="screen-header" style="text-align: center; margin-bottom: var(--space-6);">
+                        <h1 class="modal-title">Transform your workflow with AI</h1>
+                        <p class="modal-subtitle">See how AI can save you hours on every project</p>
+                    </div>
+                    
+                    <div style="max-width: 800px; margin: 0 auto;">
+                        <!-- 2D to 3D Feature -->
+                        <div style="background: var(--white); border: 1px solid rgba(26, 26, 26, 0.08); border-radius: var(--radius-xl); padding: var(--space-6); margin-bottom: var(--space-6); box-shadow: var(--elevation-2);">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); align-items: center;">
+                                <div>
+                                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: var(--white); padding: var(--space-2) var(--space-3); border-radius: var(--radius-full); font-size: var(--font-size-14); font-weight: 600; display: inline-block; margin-bottom: var(--space-3);">
+                                        NEW AI FEATURE
+                                    </div>
+                                    <h2 style="font-size: var(--font-size-32); font-weight: 700; color: var(--text); margin-bottom: var(--space-3); line-height: 1.2;">
+                                        Convert 2D Floor Plans to 3D Models
+                                    </h2>
+                                    <p style="font-size: var(--font-size-18); color: var(--text-secondary); margin-bottom: var(--space-4); line-height: 1.6;">
+                                        Upload any floor plan and watch our AI transform it into a stunning 3D model in seconds. Perfect for client presentations and project planning.
+                                    </p>
+                                    
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); margin-bottom: var(--space-4);">
+                                        <div style="display: flex; align-items: center; gap: var(--space-2);">
+                                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                            </svg>
+                                            <span style="font-weight: 600;">Instant conversion</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: var(--space-2);">
+                                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                            <span style="font-weight: 600;">HD quality</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: var(--space-2);">
+                                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                            </svg>
+                                            <span style="font-weight: 600;">Secure & private</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: var(--space-2);">
+                                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                            <span style="font-weight: 600;">Client-ready</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <button class="btn btn-large" onclick="HP.tryAIFeature()">
+                                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                        </svg>
+                                        Try AI Feature Now
+                                    </button>
+                                </div>
+                                
+                                <div style="text-align: center;">
+                                    <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: var(--radius-lg); padding: var(--space-4); margin-bottom: var(--space-3);">
+                                        <div style="font-size: var(--font-size-14); color: var(--white); margin-bottom: var(--space-2);">2D Floor Plan</div>
+                                        <img src="https://wpmedia.roomsketcher.com/content/uploads/2022/01/27111154/Profile_Black-2D_Floor_Plan.jpg" 
+                                             alt="2D Floor Plan" 
+                                             style="width: 200px; height: 150px; object-fit: cover; border-radius: var(--radius-md); border: 2px solid rgba(255,255,255,0.3);">
+                                    </div>
+                                    
+                                    <div style="font-size: var(--font-size-24); color: var(--text-secondary); margin: var(--space-2) 0;">↓</div>
+                                    
+                                    <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: var(--radius-lg); padding: var(--space-4);">
+                                        <div style="font-size: var(--font-size-14); color: var(--white); margin-bottom: var(--space-2);">3D Model</div>
+                                        <img src="https://images.prismic.io/houzz/1beec8aa-8303-47e0-9893-a0ebc75aba51_FloorPlan.png?auto=format,compress" 
+                                             alt="3D Model" 
+                                             style="width: 200px; height: 150px; object-fit: cover; border-radius: var(--radius-md); border: 2px solid rgba(255,255,255,0.3);">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Other AI Features -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-6);">
+                            <div style="background: var(--white); border: 1px solid rgba(26, 26, 26, 0.08); border-radius: var(--radius-lg); padding: var(--space-4); box-shadow: var(--elevation-1);">
+                                <div style="background: var(--primary-tint); width: 48px; height: 48px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-3);">
+                                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                </div>
+                                <h3 style="font-size: var(--font-size-18); font-weight: 600; color: var(--text); margin-bottom: var(--space-2);">Smart Estimates</h3>
+                                <p style="font-size: var(--font-size-14); color: var(--text-secondary); line-height: 1.5;">AI analyzes project photos and generates accurate estimates in minutes.</p>
+                            </div>
+                            
+                            <div style="background: var(--white); border: 1px solid rgba(26, 26, 26, 0.08); border-radius: var(--radius-lg); padding: var(--space-4); box-shadow: var(--elevation-1);">
+                                <div style="background: var(--primary-tint); width: 48px; height: 48px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-3);">
+                                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <h3 style="font-size: var(--font-size-18); font-weight: 600; color: var(--text); margin-bottom: var(--space-2);">Voice Commands</h3>
+                                <p style="font-size: var(--font-size-14); color: var(--text-secondary); line-height: 1.5;">Create estimates and manage projects using natural voice commands.</p>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; display: flex; gap: var(--space-3); justify-content: center;">
+                            <button class="btn btn-secondary btn-large" onclick="HP.finishOnboarding()" style="min-width: 140px;">
+                                Skip AI Features
+                            </button>
+                            <button class="btn btn-large" onclick="HP.tryAIFeature()" style="min-width: 140px;">
+                                Start Using AI
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                document.querySelector('.main-container').appendChild(aiScreen);
+            },
+
+            // Try AI feature
+            tryAIFeature() {
+                this.showToast('AI feature demo starting... Welcome to the future of construction!');
+                // Here you would typically redirect to the AI features
+            },
+
+            // Finish onboarding
+            finishOnboarding() {
+                this.showToast('Onboarding completed! Welcome to Houzz Pro!');
+                // Here you would typically redirect to the main dashboard
+            }
+        };
+
+        // Add CSS for loading animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            HP.init();
+            
+            // FALLBACK: If upload still doesn't work, add a direct button
+            setTimeout(() => {
+                const uploadArea = document.getElementById('upload-area');
+                if (uploadArea && !uploadArea.querySelector('.fallback-upload-btn')) {
+                    const fallbackBtn = document.createElement('button');
+                    fallbackBtn.className = 'btn btn-large fallback-upload-btn';
+                    fallbackBtn.style.marginTop = 'var(--space-3)';
+                    fallbackBtn.textContent = 'Click here to upload file';
+                    fallbackBtn.onclick = function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const fileInput = document.getElementById('invoice-upload');
+                        if (fileInput) {
+                            fileInput.click();
+                        }
+                    };
+                    uploadArea.appendChild(fallbackBtn);
+                }
+            }, 1000);
+        });
+    </script>
 </body>
 </html>
