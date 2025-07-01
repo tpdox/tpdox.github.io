@@ -935,7 +935,7 @@
         <!-- Main Content Area -->
         <div class="main-container">
                 <!-- Welcome Screen -->
-                <div class="screen" id="welcome-screen">
+                <div class="screen active" id="welcome-screen">
                     <div class="hero-section">
                         <div class="hero-badge">
                             <span data-en="⚡ Setup in under 15 minutes" data-es="⚡ Configuración en menos de 15 minutos">⚡ Setup in under 15 minutes</span>
@@ -987,7 +987,7 @@
                 </div>
 
                 <!-- Business Info Extraction -->
-                <div class="screen active" id="extraction-screen">
+                <div class="screen" id="extraction-screen">
                     <div class="screen-header">
                         <h1 class="screen-title" data-en="Business Setup" data-es="Configuración del Negocio">Business Setup</h1>
                         <p class="screen-subtitle" data-en="Share your business information and we'll set everything up automatically" data-es="Comparte la información de tu negocio y configuraremos todo automáticamente">Share your business information and we'll set everything up automatically</p>
@@ -1203,7 +1203,7 @@
                     
                     <div class="step-container">
                         <!-- Step 1: Welcome -->
-                        <div class="step" id="step-1">
+                        <div class="step active" id="step-1">
                             <div class="step-header">
                                 <div class="step-number">1</div>
                                 <div class="step-title" data-en="Welcome" data-es="Bienvenido">Welcome</div>
@@ -1218,7 +1218,7 @@
                         </div>
 
                         <!-- Step 2: Business Info -->
-                        <div class="step active" id="step-2">
+                        <div class="step" id="step-2">
                             <div class="step-header">
                                 <div class="step-number">2</div>
                                 <div class="step-title" data-en="Business Info" data-es="Info del Negocio">Business Info</div>
@@ -1373,7 +1373,7 @@
     <div class="notification" id="notification"></div>
 
     <script>
-        let currentStep = 2;
+        let currentStep = 1;
         let currentLang = 'en';
         let featuresUnlocked = 1;
         let timeSaved = 2;
